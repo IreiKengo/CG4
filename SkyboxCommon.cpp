@@ -1,26 +1,27 @@
-#include "Object3dCommon.h"
+#include "SkyboxCommon.h"
 #include "Logger.h"
 #include "StringUtility.h"
 #include <iostream>
 
+
 using namespace StringUtility;
 using namespace Logger;
 
-void Object3dCommon::Initialize(DirectXCommon* dxCommon)
+void SkyboxCommon::Initialize(DirectXCommon* dxCommon)
 {
 
-	//引数で受け取ってメンバ変数に記録する
+	//引数を受け取ってメンバ変数に記録する
 	dxCommon_ = dxCommon;
 
 	CreateGraphicsPipeline();
 
+
 }
 
-void Object3dCommon::ScreenCommon()
+void SkyboxCommon::ScreenCommon()
 {
 
-	//
-	// ignatureを設定。PSOに設定しているけど別途設定が必要
+	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());//PSOを設定
 	//形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良い
@@ -28,7 +29,7 @@ void Object3dCommon::ScreenCommon()
 
 }
 
-void Object3dCommon::CreateRootSignature()
+void SkyboxCommon::CreateRootSignature()
 {
 
 	std::ostream& logStream = std::cerr;
@@ -98,7 +99,7 @@ void Object3dCommon::CreateRootSignature()
 
 }
 
-void Object3dCommon::CreateGraphicsPipeline()
+void SkyboxCommon::CreateGraphicsPipeline()
 {
 
 	CreateRootSignature();
@@ -190,4 +191,3 @@ void Object3dCommon::CreateGraphicsPipeline()
 		IID_PPV_ARGS(&graphicsPipelineState));
 
 }
-

@@ -2,7 +2,7 @@
 #include <d3d12.h>
 #include <cstdint>
 #include <wrl.h>
-
+#include "externals/DirectXTex/DirectXTex.h"
 
 class DirectXCommon;
 
@@ -24,7 +24,7 @@ public:
 
 
 	//SRV生成（テクスチャ用）
-	void CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels);
+	void CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, const DirectX::TexMetadata& metaData);
 	//SRV生成（Structured Buffer用）
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
 

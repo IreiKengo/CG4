@@ -55,27 +55,40 @@ void TextureManager::LoadTexture(const std::string& filePath)
  // ローカル変数としてScratchImageを生成
 	DirectX::ScratchImage image{};
 
-
 	// std::string -> std::wstring 変換
 	std::wstring filePathw(filePath.begin(), filePath.end());
 
+
+
 	// WIC経由で画像をロード
-	HRESULT hr = DirectX::LoadFromWICFile(
-		filePathw.c_str(),
-		DirectX::WIC_FLAGS_FORCE_SRGB,
-		nullptr,
-		image);
+	HRESULT hr;
+	if (filePathw.ends_with(L".dds")) {//.ddsで終わっていたらddsとみなす。より安全な方法はいくらでもあるので余裕があれば対応すると良い
+		hr = DirectX::LoadFromDDSFile(filePathw.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	}
+	else
+	{
+	 hr = DirectX::LoadFromWICFile(filePathw.c_str(),DirectX::WIC_FLAGS_FORCE_SRGB,nullptr,image);
+
+	}
+
 	assert(SUCCEEDED(hr));
 
 	// ミップマップ生成
 	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(
+	if (DirectX::IsCompressed(image.GetMetadata().format)) {//圧縮フォーマットかどうか調べる
+		mipImages = std::move(image);//圧縮フォーマットならそのまま使うのでmoveする
+	}
+	else
+	{
+		hr = DirectX::GenerateMipMaps(
 		image.GetImages(),
 		image.GetImageCount(),
 		image.GetMetadata(),
 		DirectX::TEX_FILTER_SRGB,
-		0,
+		4,
 		mipImages);
+	}
+	
 	assert(SUCCEEDED(hr));
 
 	
@@ -95,11 +108,13 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData.srvIndex);
 
 
+
 	srvManager_->CreateSRVforTexture2D(
 		textureData.srvIndex,
 		textureData.resource.Get(),
-		textureData.metadata.format, 
-		static_cast<UINT>(textureData.metadata.mipLevels));
+		textureData.metadata
+	);
+		//static_cast<UINT>(textureData.metadata.mipLevels)
 
 	//テクスチャデータ転送
 	//転送用に生成した中間リソースをテクスチャデータ構造体に格納

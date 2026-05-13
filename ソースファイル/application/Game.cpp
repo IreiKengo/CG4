@@ -86,6 +86,7 @@ void Game::Initialize()
 	//テクスチャマネージャの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon, srvManager);
 	TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
+	TextureManager::GetInstance()->LoadTexture("resources/rostock_laage_airport_4k.dds");
 
 	//スプライト共通部の初期化
 	spriteCommon = new SpriteCommon;
