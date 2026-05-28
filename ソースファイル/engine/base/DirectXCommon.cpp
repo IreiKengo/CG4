@@ -46,6 +46,9 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	CreateDepthStencilTextureResource();
 	//各種デスクリプターヒープの生成
 	CreateDescriptorHeaps();
+
+	srvManager_.Initialize(this);
+
 	//レンダーターゲットビューの初期化
 	InitializeRenderTargetView();
 	//深度ステンシルビューの初期化
@@ -93,6 +96,8 @@ void DirectXCommon::PreDraw()
 
 	commandList->RSSetViewports(1, &viewport);//Viewportを設定
 	commandList->RSSetScissorRects(1, &scissorRect);//Scirssorを設定
+
+	srvManager_.PreDraw();
 
 }
 

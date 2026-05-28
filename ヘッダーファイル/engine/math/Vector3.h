@@ -163,3 +163,4 @@ inline Vector3& operator/=(Vector3& a, const Vector3& b)
 
 	return a;
 }
+

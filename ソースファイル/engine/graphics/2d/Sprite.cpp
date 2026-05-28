@@ -9,14 +9,14 @@
 
 using namespace math;
 
-void Sprite::Initialize(SpriteCommon* spriteCommon, SrvManager* srvManager, std::string textureFilePath)
+void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 {
 
 	//引数で受け取ってメンバ変数に記録する
 	this->spriteCommon = spriteCommon;
 	dxCommon_ = spriteCommon->GetDxCommon();
 
-	srvManager_ = srvManager;
+	srvManager_ = dxCommon_->GetSrvManager();
 
 	textureFilePath_ = textureFilePath;
 
@@ -28,7 +28,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, SrvManager* srvManager, std:
 
 	
 
-	//単位行列を書き込んでおく
+	
 	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 
 	AdjustTextureSize();

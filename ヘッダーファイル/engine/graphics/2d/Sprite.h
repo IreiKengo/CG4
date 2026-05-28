@@ -38,7 +38,7 @@ public:
 		Matrix4x4 World;
 	};
 
-	void Initialize(SpriteCommon* spriteCommon, SrvManager* srvManager, std::string textureFilePath);
+	void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
 
 	void Update();
 
@@ -85,7 +85,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
 
 	//マテリアルリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;;
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
 	//バッファリソース内のデータを指すポインタ
 	Material* materialData = nullptr;
 
@@ -102,9 +102,9 @@ private:
 	};
 
 	std::string textureFilePath_;
-
-	SrvManager* srvManager_ = nullptr;
 	uint32_t textureIndex = 0;
+	
+	SrvManager* srvManager_ = nullptr;
 
 
 	//座標
@@ -114,8 +114,7 @@ private:
 	//サイズ
 	Vector2 size = { 100.0f,100.0f };
 
-	//テクスチャ番号
-	//uint32_t textureIndex = 0;
+	
 
 	//アンカーポイント
 	Vector2 anchorPoint = { 0.0f,0.0f };

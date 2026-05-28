@@ -2,7 +2,6 @@
 #include "Input.h"
 #include "WinApp.h"
 #include "DirectXCommon.h"
-#include "SrvManager.h"
 #include "ImguiManager.h"
 #include "Sound.h"
 
@@ -41,20 +40,11 @@ void Framework::Initialize()
 
 #pragma endregion
 
-#pragma region SRVマネージャー
-
-	//SRVマネージャーの初期化
-	srvManager = new SrvManager();
-	srvManager->Initialize(dxCommon);
-
-#pragma endregion
-
-
 #pragma region Imguiの初期化
 
 	imgui = new ImguiManager();
 
-	imgui->Initialize(winApp, dxCommon, srvManager);
+	imgui->Initialize(winApp, dxCommon);
 
 #pragma endregion
 
@@ -108,9 +98,6 @@ void Framework::Finalize()
 	imgui->Finalize();
 	delete imgui;
 	imgui = nullptr;
-
-	delete srvManager;
-	srvManager = nullptr;
 
 	sound->SoundUnload();
 	sound->Finalize();

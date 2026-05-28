@@ -3,7 +3,6 @@
 class WinApp;
 class Input;
 class DirectXCommon;
-class SrvManager;
 class Sound;
 class ImguiManager;
 
@@ -46,8 +45,6 @@ protected:
 
 	//ポインタ
 	DirectXCommon* dxCommon = nullptr;
-
-	SrvManager* srvManager = nullptr;
 
 	Sound* sound = nullptr;
 

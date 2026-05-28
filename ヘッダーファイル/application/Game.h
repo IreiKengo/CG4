@@ -9,7 +9,8 @@ class Object3dCommon;
 class Sprite;
 class Object3d;
 class ParticleEmitter;
-
+class SkyboxCommon;
+class Skybox;
 
 
 class Game : public Framework
@@ -49,5 +50,9 @@ private:
 	ParticleEmitter* particleCircle = nullptr;
 
 	ParticleEmitter* particleChecker = nullptr;
+
+	SkyboxCommon* skyboxCommon = nullptr;
+
+	Skybox* skybox = nullptr;
 
 };

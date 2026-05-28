@@ -8,9 +8,7 @@
 #include <string>
 #include "externals/DirectXTex/DirectXTex.h"
 #include <chrono>
-
-
-
+#include "SrvManager.h"
 
 //DirectX基盤
 class DirectXCommon
@@ -35,6 +33,8 @@ public:
 	ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
 	const DXGI_SWAP_CHAIN_DESC1& GetSwapChainDesc()const { return swapChainDesc; }
 	const DXGI_FORMAT& GetRTVFormat()const { return rtvFormat_; }
+	SrvManager* GetSrvManager() { return &srvManager_; }
+
 
 	//シェーダーのコンパイル
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
@@ -118,7 +118,7 @@ WinApp* winApp_ = nullptr;
 std::chrono::steady_clock::time_point reference_;
 
 
-
+SrvManager srvManager_;
 
 
 

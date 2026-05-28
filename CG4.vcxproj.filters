@@ -13,10 +13,10 @@
     <FxCompile Include="resources\shaders\Particle.PS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Skybox.VS.hlsl">
+    <FxCompile Include="resources\shaders\Skybox.VS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Skybox.PS.hlsl">
+    <FxCompile Include="resources\shaders\Skybox.PS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -95,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="SkyboxCommon.cpp">
       <Filter>ソース ファイル\engine\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>ソース ファイル\engine\graphics\3d</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +191,9 @@
     <ClInclude Include="SkyboxCommon.h">
       <Filter>ヘッダー ファイル\engine\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>ヘッダー ファイル\engine\graphics\3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ヘッダー ファイル">
@@ -279,7 +285,7 @@
     <None Include="resources\shaders\Particle.hlsli">
       <Filter>リソース ファイル</Filter>
     </None>
-    <None Include="Skybox.hlsli">
+    <None Include="resources\shaders\Skybox.hlsli">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>

@@ -16,8 +16,9 @@
 #include <strsafe.h>
 #include "D3DResourceLeakChecker.h"
 #include <filesystem>
-#include "SrvManager.h"
 #include "ImguiManager.h"
+#include "SkyboxCommon.h"
+#include "Skybox.h"
 
 #pragma comment(lib,"Dbghelp.lib")
 
@@ -84,7 +85,7 @@ void Game::Initialize()
 #pragma region スプライト関連
 
 	//テクスチャマネージャの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon, srvManager);
+	TextureManager::GetInstance()->Initialize(dxCommon);
 	TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
 	TextureManager::GetInstance()->LoadTexture("resources/rostock_laage_airport_4k.dds");
 
@@ -96,12 +97,12 @@ void Game::Initialize()
 	sprite = new Sprite();
 
 	std::string texturePath = "resources/uvChecker.png";
-	sprite->Initialize(spriteCommon, srvManager, texturePath);
+	sprite->Initialize(spriteCommon, texturePath);
 
 #pragma endregion
 
 #pragma region パーティクル
-	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager);
+	ParticleManager::GetInstance()->Initialize(dxCommon);
 	ParticleManager::GetInstance()->SetCamera(camera);
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
@@ -168,6 +169,13 @@ void Game::Initialize()
 
 #pragma endregion
 
+	skyboxCommon = new SkyboxCommon();
+	skyboxCommon->Initialize(dxCommon);
+	skyboxCommon->SetDefaultCamera(camera);
+
+	skybox = new Skybox();
+	std::string skyboxDdsPath = "resources/rostock_laage_airport_4k.dds";
+	skybox->Initialize(skyboxCommon,skyboxDdsPath);
 
 
 }
@@ -189,7 +197,7 @@ void Game::Finalize()
 
 	//Sprite解放
 
-	//CloseHandle(dxCommon->GetFenceEvent());
+	
 
 	delete sprite;
 	sprite = nullptr;
@@ -204,8 +212,11 @@ void Game::Finalize()
 	
 
 	delete object3dCommon;
+	delete skybox;
 
 	delete camera;
+
+	delete skyboxCommon;
 
 	//SpriteCommon解放
 	delete spriteCommon;
@@ -222,12 +233,12 @@ void Game::Update()
 
 	camera->DebugUpdate();
 
-	sprite->DebugUpdate();
+	//sprite->DebugUpdate();
 
 	//カメラの更新
 	camera->Update();
 
-	sprite->Update();
+	//sprite->Update();
 
 	object[0]->SetTranslate({ -1.0f,-1.0f,0.0f });
 	object[1]->SetTranslate({ 1.0f,-1.0f,0.0f });
@@ -238,11 +249,11 @@ void Game::Update()
 
 	float deltaTime = 1.0f / 60.0f; // 本来は実時間計測
 
-
+	skybox->Update();
 
 	//particleCircle->Update(deltaTime);
 	//particleChecker->Update(deltaTime);
-	ParticleManager::GetInstance()->Update();
+	//ParticleManager::GetInstance()->Update();
 
 }
 
@@ -252,7 +263,7 @@ void Game::Draw()
 
 	//DirectXの描画基準。全ての描画に共通宇のグラッフィックスコマンドを積む
 	dxCommon->PreDraw();
-	srvManager->PreDraw();
+
 
 	//3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 	object3dCommon->ScreenCommon();
@@ -266,12 +277,13 @@ void Game::Draw()
 	}
 
 	//Spriteの描画基準。Spriteの描画の共通のグラッフィックスコマンドを積む
-	spriteCommon->ScreenCommon();
+	//spriteCommon->ScreenCommon();
 
 
 	//Spriteの描画
-	sprite->Draw();
+	//sprite->Draw();
 
+	skybox->Draw();
 
 	//ParticleManager::GetInstance()->Draw();
 
