@@ -157,6 +157,7 @@ void SkyboxCommon::CreateGraphicsPipeline()
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;//今までと同様に比較
 
 
+
 	//PSOを生成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();//RootSignature

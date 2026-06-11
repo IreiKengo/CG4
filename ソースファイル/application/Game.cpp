@@ -79,7 +79,7 @@ void Game::Initialize()
 
 	camera = new Camera();
 	camera->SetRotate({ 0.0f,0.0f,0.0f });
-	camera->SetTranslate({ 0.0f,0.0f,-10.0f });
+	camera->SetTranslate({ 0.0f,4.0f,-23.0f });
 #pragma endregion 
 
 #pragma region スプライト関連
@@ -88,6 +88,7 @@ void Game::Initialize()
 	TextureManager::GetInstance()->Initialize(dxCommon);
 	TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
 	TextureManager::GetInstance()->LoadTexture("resources/rostock_laage_airport_4k.dds");
+
 
 	//スプライト共通部の初期化
 	spriteCommon = new SpriteCommon;
@@ -139,7 +140,7 @@ void Game::Initialize()
 	ModelManager::GetInstance()->Initialize(dxCommon);
 
 	//.objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
 	ModelManager::GetInstance()->LoadModel("multiMesh.obj");
 	ModelManager::GetInstance()->LoadModel("multiMaterial.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
@@ -156,7 +157,7 @@ void Game::Initialize()
 
 		std::string modelPath;
 		if (i % 2 == 0) {
-			modelPath = "plane.obj";
+			modelPath = "terrain.obj";
 		} else {
 
 			modelPath = "axis.obj";
@@ -234,7 +235,10 @@ void Game::Update()
 	camera->DebugUpdate();
 
 	//sprite->DebugUpdate();
-
+	for (uint32_t i = 0; i < 2; ++i)
+	{
+		object[i]->DebugUpdate();
+	}
 	//カメラの更新
 	camera->Update();
 
@@ -254,6 +258,7 @@ void Game::Update()
 	//particleCircle->Update(deltaTime);
 	//particleChecker->Update(deltaTime);
 	//ParticleManager::GetInstance()->Update();
+
 
 }
 
@@ -282,7 +287,7 @@ void Game::Draw()
 
 	//Spriteの描画
 	//sprite->Draw();
-
+	 
 	skybox->Draw();
 
 	//ParticleManager::GetInstance()->Draw();

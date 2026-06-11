@@ -7,7 +7,9 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4Math.h"
-
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include<assimp/postprocess.h>
 
 class ModelCommon;
 class DirectXCommon;
@@ -25,6 +27,12 @@ public:
 		Vector3 normal;
 	};
 
+	struct Node {
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+	};
+
 	struct MaterialData
 	{
 		std::string textureFilePath;
@@ -35,6 +43,7 @@ public:
 	{
 		std::vector<VertexData> vertices;
 		MaterialData material;
+		Node rootNode;
 	};
 
 	//マテリアルデータ
@@ -44,12 +53,20 @@ public:
 		int32_t enableLighting;
 		float padding[3];
 		Matrix4x4 uvTransform;
+		float shininess;//光沢度
+		int32_t lightingModel;//ライトの切り替え
 	};
 
 
 	void Initialize(ModelCommon* modelCommon,const std::string& directoryPath,const std::string&filename);
 
 	void Draw();
+
+	const Matrix4x4& GetLocalMatrix()const { return modelData.rootNode.localMatrix; }
+	Material* GetMaterial() { return materialData; }
+
+	void SetEnableLighting(bool enable) { materialData->enableLighting = enable; };
+	void SetLightingModel(int model) { materialData->lightingModel = model; };
 
 private:
 
@@ -75,7 +92,7 @@ private:
 	//.mtlファイルの読み取り
 	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 	//.objファイルの読み取り
-	static ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+	static ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
 
 	DirectXCommon* dxCommon_ = nullptr;
 
@@ -83,5 +100,7 @@ private:
 	void CreateVertexData();
 	//マテリアルデータの作成
 	void CreateMaterialData();
+
+	static Node ReadNode(aiNode* node);
 
 };

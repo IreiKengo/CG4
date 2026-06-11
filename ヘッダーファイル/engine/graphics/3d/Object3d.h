@@ -27,6 +27,7 @@ public:
 	{
 		Matrix4x4 WVP;
 		Matrix4x4 World;
+		Matrix4x4 WorldInverseTranspose;
 	};
 
 	struct DirectionalLight
@@ -36,9 +37,42 @@ public:
 		float intensity; //輝度
 	};
 
+	struct CameraForGPU
+	{
+		Vector3 worldPosition;
+	};
+
+
+	//点光源
+	struct PointLight
+	{
+
+		Vector4 color;//ライトの色
+		Vector3 position;//ライトの位置
+		float intensity;//輝度
+		float radius;// ライトの届く最大距離
+		float decay;// 減衰率
+		float padding[2];
+
+	};
+
+	struct SpotLight
+	{
+		Vector4 color;//!<ライトの色
+		Vector3 position;//ライトの位置
+		float intensity;//輝度
+		Vector3 direction;//スポットライトの方向
+		float distance;//ライトの届く最大距離
+		float decay;//減衰率
+		float cosAngle;//スポットライトの余弦
+		float cosFalloffStart;//スポットライトの減衰開始角の余弦
+		float padding;
+	};
+
 	void Initialize(Object3dCommon* object3dCommon);
 	void Update();
 	void Draw();
+	void DebugUpdate();
 
 
 	//setter
@@ -71,6 +105,18 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource;
 	//データを書き込む
 	DirectionalLight* directionalLightData = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource;
+	CameraForGPU* cameraData = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointResource;
+	PointLight* pointLightData = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> spotResource;
+	SpotLight* spotLightData = nullptr;
+
+	//平行光源の切り替え	
+	bool useLighting = false;
 
 	Transform transform;
 

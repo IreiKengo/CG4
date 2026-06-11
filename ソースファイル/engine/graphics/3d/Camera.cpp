@@ -8,7 +8,7 @@ using namespace math;
 
 
 Camera::Camera()
-	: transform({ { 1.0f,1.0f,1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f,0.0f,0.0f } })
+	: transform({ { 1.0f,1.0f,1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f,5.0f,-23.0f } })
 	, fovY(0.45f)
 	, aspectRatio(float(WinApp::kClientWidth) / float(WinApp::kClientHeight))
 	, nearClip(0.1f)

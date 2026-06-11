@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 struct Vector3
 {
@@ -164,3 +165,19 @@ inline Vector3& operator/=(Vector3& a, const Vector3& b)
 	return a;
 }
 
+// 内積
+inline float Dot(const Vector3& v1, const Vector3& v2)
+{
+	float result;
+
+	result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+
+	return result;
+
+}
+
+inline Vector3 Normalize(const Vector3& v)
+{
+	float length = std::sqrt(Dot(v, v));
+	return { v.x / length,v.y / length,v.z / length };
+}
