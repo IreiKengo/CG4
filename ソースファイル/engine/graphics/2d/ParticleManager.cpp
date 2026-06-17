@@ -34,38 +34,14 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon)
 
 	CreateGraphicsPipeline();
 
-	modelData.vertices.push_back({ .position = {1.0f,1.0f,0.0f,1.0f},.texCoord = {0.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//左上
-	modelData.vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
-	modelData.vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
-	modelData.vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
-	modelData.vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
-	modelData.vertices.push_back({ .position = {-1.0f,-1.0f,0.0f,1.0f},.texCoord = {1.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//右下
-
-
-	//頂点リソース
-	vertexResource = dxCommon->CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
-
-	//リソースの先頭のアドレスから使う
-	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	//使用するリソースのサイズは頂点のサイズ
-	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
-	//１頂点当たりのサイズ
-	vertexBufferView.StrideInBytes = sizeof(VertexData);
-
-	VertexData* vertexData = nullptr;
-	//頂点リソースにデータを書き込む
-	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));//書き込むためのアドレスを取得
-	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());//頂点データをリソースにコピー
+	
 
 	accelerationField.acceleration = { -10.0f,0.0f,0.0f };
 	accelerationField.area.min = { -5.0f,-5.0f,-5.0f };
 	accelerationField.area.max = { 1.0f,1.0f,1.0f };
 
 
-	materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
-	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-	materialData->color = { 1,1,1,1 };
-	materialData->uvTransform = MakeIdentity4x4();
+	CreateMaterialData();
 
 }
 
@@ -149,9 +125,10 @@ void ParticleManager::Draw()
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());//PSOを設定
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);//VBVを設定
+	
 	for (auto& [groupName, group] : particleGroups)
 	{
+		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &group.vertexBufferView);//VBVを設定
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0,materialResource->GetGPUVirtualAddress());
 		//インスタンシングデータのSRVのDescriptorTableを設定
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(group.instancingSrvIndex));
@@ -159,7 +136,7 @@ void ParticleManager::Draw()
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(group.materialData.srvIndex));
 		if (group.numInstance == 0) continue;
 		//DrawCall(インスタンシング描画)
-		dxCommon_->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), group.numInstance, 0, 0);
+		dxCommon_->GetCommandList()->DrawInstanced(group.vertexCount, group.numInstance, 0, 0);
 
 	}
 	
@@ -375,6 +352,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 
 }
 
+
 void ParticleManager::CreateParticleGroup(const std::string name,const std::string textureFilePath)
 {
 
@@ -394,6 +372,9 @@ void ParticleManager::CreateParticleGroup(const std::string name,const std::stri
 	// インスタンシング用リソースの生成
 
 	particleGroup.instancingSrvIndex = srvManager_->Allocate();
+
+	CreateVertexData(particleGroup);
+
 
 	//Instancing用のParticleForGPUリソースを作る
 	particleGroup.instancingResource =
@@ -473,12 +454,12 @@ void  ParticleManager::Finalize()
 	for (auto& [name, group] : particleGroups)
 	{
 		group.instancingResource.Reset();
+		group.vertexResource.Reset();
 	}
 	particleGroups.clear();
 
 	// 2. 基本リソースの解放
 	// これらを解放し忘れると "Live Object" エラーになります
-	vertexResource.Reset();
 	materialResource.Reset();
 	graphicsPipelineState.Reset();
 	rootSignature.Reset();
@@ -487,5 +468,47 @@ void  ParticleManager::Finalize()
 	dxCommon_ = nullptr;
 	srvManager_ = nullptr;
 	camera_ = nullptr;
+
+}
+
+
+void ParticleManager::CreateVertexData(ParticleGroup& group)
+{
+	std::vector<VertexData> vertices;
+	vertices.push_back({ .position = {1.0f,1.0f,0.0f,1.0f},.texCoord = {0.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//左上
+	vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
+	vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
+	vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
+	vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
+	vertices.push_back({ .position = {-1.0f,-1.0f,0.0f,1.0f},.texCoord = {1.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//右下
+
+	group.vertexCount = static_cast<uint32_t>(vertices.size());
+
+	//頂点リソース
+	group.vertexResource = dxCommon_->CreateBufferResource(sizeof(VertexData) * vertices.size());
+
+	//リソースの先頭のアドレスから使う
+	group.vertexBufferView.BufferLocation = group.vertexResource->GetGPUVirtualAddress();
+	//使用するリソースのサイズは頂点のサイズ
+	group.vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * vertices.size());
+	//１頂点当たりのサイズ
+	group.vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+	VertexData* vertexData = nullptr;
+	//頂点リソースにデータを書き込む
+	group.vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));//書き込むためのアドレスを取得
+	std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertices.size());//頂点データをリソースにコピー
+
+
+
+}
+
+void ParticleManager::CreateMaterialData()
+{
+
+	materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
+	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+	materialData->color = { 1,1,1,1 };
+	materialData->uvTransform = MakeIdentity4x4();
 
 }

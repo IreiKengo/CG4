@@ -57,11 +57,7 @@ public:
 
 	};
 
-	struct ModelData
-	{
-		std::vector<VertexData> vertices;
-
-	};
+	
 
 	struct Material
 	{
@@ -80,9 +76,9 @@ public:
 		uint32_t numInstance = 0;//インスタンス数
 		ParticleForGPU* instancingData = nullptr;//インスタンシングデータを書き込むためのポインタ
 
-		
-
-
+		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+		uint32_t vertexCount = 0;
 
 	};
 
@@ -130,16 +126,10 @@ private:
 
 	std::mt19937 randomEngine_;
 
-	ModelData modelData;
+	
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
 	Material* materialData = nullptr;
-
-	//バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
-
-	//バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
 
 	std::unordered_map < std::string, ParticleGroup> particleGroups;
@@ -168,5 +158,7 @@ private:
 	//パーティクル生成
 	Particle MakeNewParticle(const Vector3& translate);
 
+	void CreateVertexData(ParticleGroup & group);
+	void CreateMaterialData();
 
 };
