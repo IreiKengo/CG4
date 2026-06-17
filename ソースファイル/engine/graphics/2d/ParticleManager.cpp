@@ -77,6 +77,7 @@ void ParticleManager::Update()
 	billboardMatrix.m[3][0] = 0.0f;
 	billboardMatrix.m[3][1] = 0.0f;
 	billboardMatrix.m[3][2] = 0.0f;
+	billboardMatrix.m[3][3] = 1.0f;
 
 	//ビュー行列とプロジェクション行列をカメラから取得
 	Matrix4x4 viewMatrix = camera_->GetViewMatrix();
@@ -99,21 +100,21 @@ void ParticleManager::Update()
 
 			//場の影響を計算（加速）
 			//Fieldの範囲内のParticleには加速度を適用する
-			if (IsCollision(accelerationField.area, (*particleIterator).transform.translate))
+			/*if (IsCollision(accelerationField.area, (*particleIterator).transform.translate))
 			{
 				(*particleIterator).velocity += accelerationField.acceleration * kDeltaTime;
-			}
+			}*/
 
 			//移動処理（速度を座標に加算）
-			(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
+			//(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
 			//経過時間を加算
 			(*particleIterator).currentTime += kDeltaTime;//経過時間を足す
 
 			Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
 			Matrix4x4 translateMatrix = MakeTranslateMatrix((*particleIterator).transform.translate);
-
+			Matrix4x4 rotateZMatrix = MakeRotateZMatrix((*particleIterator).transform.rotate.z);
 			//ワールド行列を計算
-			Matrix4x4 worldMatrix = scaleMatrix * billboardMatrix * translateMatrix;
+			Matrix4x4 worldMatrix = scaleMatrix * rotateZMatrix * billboardMatrix * translateMatrix;
 
 			//ワールドビュープロジェクション行列を合成
 			Matrix4x4 worldViewProjectionMatrixParticle = Multiply(Multiply(worldMatrix, viewMatrix), projectionMatrix);
@@ -349,18 +350,24 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 
 	std::uniform_real_distribution <float> distribution(-1.0f, 1.0f);
 	Particle particle;
-	particle.transform.scale = { 1.0f,1.0f,1.0f };
-	particle.transform.rotate = { 0.0f,0.0f,0.0f };
-	Vector3 randomTranslate{ distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
-	particle.transform.translate = translate + randomTranslate;
-	particle.velocity = { distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
 
+	std::uniform_real_distribution <float> distScale(0.4f, 1.5f);
+	particle.transform.scale = { 0.05f,distScale(randomEngine_),1.0f};
+
+	std::uniform_real_distribution <float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+	particle.transform.rotate = { 0.0f,0.0f,distRotate(randomEngine_)};
+
+	Vector3 randomTranslate{ distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
+	//particle.transform.translate = translate + randomTranslate;
+	particle.transform.translate = translate;
+	//particle.velocity = { distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
+	particle.velocity = { 0.0f, 0.0f, 0.0f };
 	//色
 	std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
 	particle.color = { distColor(randomEngine_),distColor(randomEngine_) ,distColor(randomEngine_),1.0f };
 
 	//生存時間
-	std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
+	std::uniform_real_distribution<float> distTime(1.0f, 1.0f);
 	particle.lifeTime = distTime(randomEngine_);
 	particle.currentTime = 0;
 

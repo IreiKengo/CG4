@@ -1,23 +1,21 @@
 #include "Game.h"
 #include "Logger.h"
 #include "StringUtility.h"
-#include "SpriteCommon.h"
 #include "Sprite.h"
-#include "TextureManager.h"
-#include "Object3dCommon.h"
 #include "Object3d.h"
-#include "ModelCommon.h"
-#include"ModelManager.h"
 #include "Camera.h"
-#include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include <dbghelp.h>
 #include <strsafe.h>
 #include "D3DResourceLeakChecker.h"
 #include <filesystem>
-#include "ImguiManager.h"
-#include "SkyboxCommon.h"
 #include "Skybox.h"
+#include "ParticleManager.h"
+#include"TextureManager.h"
+#include "Object3dCommon.h"
+#include "SkyboxCommon.h"
+#include "SpriteCommon.h"  // 今後使うときのために一緒に入れておくと安全です
+#include "ImguiManager.h"
 
 #pragma comment(lib,"Dbghelp.lib")
 
@@ -27,49 +25,11 @@ using namespace Logger;
 
 D3DResourceLeakChecker leakCheck;
 
-static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception)
-{
 
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	wchar_t filePath[MAX_PATH] = { 0 };
-	CreateDirectory(L"./Dumps", nullptr);
-	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
-	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-	//processId(このexeのId)とクラッシュ(例外)の発生したthreadIdを取得
-	DWORD processId = GetCurrentProcessId();
-	DWORD threadId = GetCurrentThreadId();
-	//設定情報を入力
-	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
-	minidumpInformation.ThreadId = threadId;
-	minidumpInformation.ExceptionPointers = exception;
-	minidumpInformation.ClientPointers = TRUE;
-	//Dumpを入力。MiniDumpNormalは最低限の情報を出力するフラグ
-	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
-	//他に関連づけられているSEH例外ハンドラがあれば実行。通常はプロセスを終了する
-
-	return EXCEPTION_EXECUTE_HANDLER;
-
-}
 
 void Game::Initialize()
 {
 
-
-	Logger::Initialize();
-	Log("Hello DirectX!\n");
-	Log(
-		ConvertString(
-			std::format(
-				L"clientSize:{},{}\n",
-				WinApp::kClientWidth,
-				WinApp::kClientHeight
-			)
-		)
-	);
-
-
-	SetUnhandledExceptionFilter(ExportDump);
 
 	//基底クラスの初期化処理
 	Framework::Initialize();
@@ -83,15 +43,7 @@ void Game::Initialize()
 
 #pragma region スプライト関連
 
-	//テクスチャマネージャの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon);
-	TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
-	TextureManager::GetInstance()->LoadTexture("resources/rostock_laage_airport_4k.dds");
-
-
-	//スプライト共通部の初期化
-	spriteCommon = new SpriteCommon;
-	spriteCommon->Initialize(dxCommon);
+	
 
 
 	sprite = new Sprite();
@@ -102,7 +54,6 @@ void Game::Initialize()
 #pragma endregion
 
 #pragma region パーティクル
-	ParticleManager::GetInstance()->Initialize(dxCommon);
 	ParticleManager::GetInstance()->SetCamera(camera);
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
@@ -119,14 +70,14 @@ void Game::Initialize()
 	);
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
-		"uvChecker",              //新しい名前にする
-		"resources/uvChecker.png" //使いたい画像のパス
+		"circle2",              //新しい名前にする
+		"resources/circle2.png" //使いたい画像のパス
 	);
 
 
 	particleChecker = new ParticleEmitter(
-		"uvChecker",
-		Vector3{ 2.0f, 0, 0 },    // 位置を少しずらすと見やすいです
+		"circle2",
+		Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
 		5,                        // 発生数
 		0.1f                      // 発生頻度
 	);
@@ -135,8 +86,6 @@ void Game::Initialize()
 
 #pragma region スカイボックス
 
-	skyboxCommon = new SkyboxCommon();
-	skyboxCommon->Initialize(dxCommon);
 	skyboxCommon->SetDefaultCamera(camera);
 
 	skybox = new Skybox();
@@ -147,19 +96,8 @@ void Game::Initialize()
 
 #pragma region オブジェクト関係
 
-	//3Dモデルマネージャの初期化
-	ModelManager::GetInstance()->Initialize(dxCommon);
-
-	//.objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
-	ModelManager::GetInstance()->LoadModel("multiMesh.obj");
-	ModelManager::GetInstance()->LoadModel("multiMaterial.obj");
-	ModelManager::GetInstance()->LoadModel("axis.obj");
-
-	//3Dオブジェクト共通部の初期化
-	object3dCommon = new Object3dCommon;
+	
 	object3dCommon->SetDefaultCamera(camera);
-	object3dCommon->Initialize(dxCommon);
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -196,7 +134,7 @@ void Game::Finalize()
 	delete particleCircle;
 	particleChecker = nullptr;
 	particleCircle = nullptr;
-	ParticleManager::GetInstance()->Finalize();
+	
 
 	for (uint32_t i = 0; i < 2; ++i)
 	{
@@ -209,26 +147,14 @@ void Game::Finalize()
 	
 
 	delete sprite;
-	sprite = nullptr;
+	sprite = nullptr;	
 
-
-	//Dモデルマネージャの終了
-	ModelManager::GetInstance()->Finalize();
-
-	//TextureManager解放
-	TextureManager::GetInstance()->Finalize();
-
-	
-
-	delete object3dCommon;
 	delete skybox;
+	skybox = nullptr;
 
 	delete camera;
-
-	delete skyboxCommon;
-
-	//SpriteCommon解放
-	delete spriteCommon;
+	camera = nullptr;
+	
 
 	//基底クラスの終了処理
 	Framework::Finalize();
@@ -263,9 +189,9 @@ void Game::Update()
 
 	skybox->Update();
 
-	//particleCircle->Update(deltaTime);
-	//particleChecker->Update(deltaTime);
-	//ParticleManager::GetInstance()->Update();
+	particleCircle->Update(deltaTime);
+	particleChecker->Update(deltaTime);
+	ParticleManager::GetInstance()->Update();
 
 
 }
@@ -298,7 +224,7 @@ void Game::Draw()
 	//sprite->Draw();
 	 
 
-	//ParticleManager::GetInstance()->Draw();
+	ParticleManager::GetInstance()->Draw();
 
 	imgui->End();    // ImGui終了
 	imgui->Draw();   // 描画

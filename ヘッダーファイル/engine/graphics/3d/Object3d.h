@@ -129,6 +129,7 @@ private:
 
 	Camera* camera = nullptr;
 	
+	 float reflectIntensity = 0.5f;
 	
 	//座標返還行列データ作成
 	void CreateTransformationMatrixData();

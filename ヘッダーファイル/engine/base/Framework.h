@@ -5,7 +5,9 @@ class Input;
 class DirectXCommon;
 class Sound;
 class ImguiManager;
-
+class SpriteCommon;
+class Object3dCommon;
+class SkyboxCommon;
 
 //ゲーム全体
 class Framework
@@ -49,6 +51,13 @@ protected:
 	Sound* sound = nullptr;
 
 	ImguiManager* imgui = nullptr;
+
+	//SpriteCommonの初期化
+	SpriteCommon* spriteCommon = nullptr;
+
+	//3Dオブジェクト共通部
+	Object3dCommon* object3dCommon = nullptr;
+	SkyboxCommon* skyboxCommon = nullptr;
 
 
 };

@@ -26,7 +26,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 
 	CreateTransformationMatrixData();
 
-	
+	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 
 	
 	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);

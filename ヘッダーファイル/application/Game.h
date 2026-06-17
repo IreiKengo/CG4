@@ -4,12 +4,9 @@
 
 
 class Camera;
-class SpriteCommon;
-class Object3dCommon;
 class Sprite;
 class Object3d;
 class ParticleEmitter;
-class SkyboxCommon;
 class Skybox;
 
 
@@ -36,11 +33,7 @@ private:
 
 	
 
-	//SpriteCommonの初期化
-	SpriteCommon* spriteCommon = nullptr;
-
-	//3Dオブジェクト共通部
-	Object3dCommon* object3dCommon = nullptr;
+	
 
 	Sprite* sprite = nullptr;	
 
@@ -51,7 +44,6 @@ private:
 
 	ParticleEmitter* particleChecker = nullptr;
 
-	SkyboxCommon* skyboxCommon = nullptr;
 
 	Skybox* skybox = nullptr;
 

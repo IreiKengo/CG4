@@ -134,9 +134,6 @@ void Object3d::DebugUpdate()
 
 	ImGui::SliderFloat("spotLightDistance", &spotLightData->distance, 0.0f, 20.0f);
 	ImGui::DragFloat("spotLightDecay", &spotLightData->decay, 0.1f, 10.0f);
-
-	static float reflectIntensity = 0.5f;
-
 	
 
 
@@ -199,6 +196,8 @@ void Object3d::DebugUpdate()
 
 void Object3d::SetModel(const std::string& filePath)
 {
+
+	ModelManager::GetInstance()->LoadModel(filePath);
 
 	//モデルを検索してセットする
 	model = ModelManager::GetInstance()->FindModel(filePath);

@@ -229,7 +229,7 @@ void Object3dCommon::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.PS = { pixelShaderBlobEnvironment->GetBufferPointer(),
 	pixelShaderBlobEnvironment->GetBufferSize() };
 
-	dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, 
+	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, 
 		IID_PPV_ARGS(&graphicsPipelineStateEnvironment));
 	assert(SUCCEEDED(hr));
 }
