@@ -42,6 +42,9 @@ void Object3d::Update()
 	{
 		const Matrix4x4& viewProjectionMatrix = camera->GetViewProjectionMatrix();
 		worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
+		if (cameraData) {
+			cameraData->worldPosition = camera->GetTranslate();
+		}
 	} else
 	{
 		worldViewProjectionMatrix = worldMatrix;
@@ -57,6 +60,13 @@ void Object3d::Update()
 void Object3d::Draw()
 {
 
+	if (isUseEnvironmentMap)
+	{
+		dxCommon_->GetCommandList()->SetPipelineState(object3dCommon->GetPipelineStateEnv());//PSOを設定
+	} else
+	{
+		dxCommon_->GetCommandList()->SetPipelineState(object3dCommon->GetPipelineState());//PSOを設定
+	}
 
 	//座標変換行列CBufferの場所を設定
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResources->GetGPUVirtualAddress());
@@ -125,6 +135,11 @@ void Object3d::DebugUpdate()
 	ImGui::SliderFloat("spotLightDistance", &spotLightData->distance, 0.0f, 20.0f);
 	ImGui::DragFloat("spotLightDecay", &spotLightData->decay, 0.1f, 10.0f);
 
+	static float reflectIntensity = 0.5f;
+
+	
+
+
 	static float outerAngle = 60.0f; // 外側角度
 	static float innerAngle = 30.0f; // 内側角度
 
@@ -158,10 +173,21 @@ void Object3d::DebugUpdate()
 			180.0f
 		);
 
+
+	ImGui::Checkbox("UseEnvironmentMap", &isUseEnvironmentMap);
+
+
+	if (ImGui::SliderFloat("Reflect Intensity", &reflectIntensity, 0.0f, 1.0f))
+	{
+		// 2. スライダーが動いたら、Object3dに値をセットする！
+		// ※「monster」や「player」など、ご自身のObject3dのインスタンス名に変えてください
+		this->SetEnvironmentCoefficient(reflectIntensity);
+	}
+
 	ImGui::PopID();
 
 	ImGui::End();
-	//useLighting ? materialData->enableLighting = true : materialData->enableLighting = false;
+	
 
 	if (model) {
 		model->SetEnableLighting(useLighting);
@@ -237,5 +263,27 @@ void Object3d::CreateDirectionalLightData()
 	spotLightData->decay = 2.0f;
 	spotLightData->cosAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	spotLightData->cosFalloffStart = std::cos(std::numbers::pi_v<float> / 6.0f);
+
+}
+
+
+void Object3d::SetEnvironmentCoefficient(float coefficient)
+{
+	if (model) {
+		model->SetEnvironmentCoefficient(coefficient);
+	}
+
+}
+
+void Object3d::SetEnvironmentTexture(const std::string& filePath)
+{
+
+	// TextureManagerにロードを命令（まだ読み込んでいない場合のため）
+	TextureManager::GetInstance()->LoadTexture(filePath);
+
+	// 保持しているモデルにパスを転送
+	if (model) {
+		model->SetEnvironmentTextureFilePath(filePath);
+	}
 
 }

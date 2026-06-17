@@ -161,9 +161,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="SkyboxCommon.cpp" />
+    <ClCompile Include="ソースファイル\engine\base\Framework.cpp" />
+    <ClCompile Include="ソースファイル\engine\graphics\3d\Skybox.cpp" />
+    <ClCompile Include="ソースファイル\engine\graphics\common\SkyboxCommon.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\3d\Camera.cpp" />
     <ClCompile Include="ソースファイル\engine\debug\D3DResourceLeakChecker.cpp" />
     <ClCompile Include="ソースファイル\engine\base\DirectXCommon.cpp" />
@@ -192,6 +192,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="ソースファイル\engine\base\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="resources\shaders\Object3dEnv.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Development|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="resources\shaders\Skybox.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -252,9 +258,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Framework.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="SkyboxCommon.h" />
+    <ClInclude Include="ヘッダーファイル\engine\base\Framework.h" />
+    <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Skybox.h" />
+    <ClInclude Include="ヘッダーファイル\engine\graphics\common\SkyboxCommon.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Camera.h" />
     <ClInclude Include="ヘッダーファイル\engine\debug\D3DResourceLeakChecker.h" />
     <ClInclude Include="ヘッダーファイル\engine\base\DirectXCommon.h" />

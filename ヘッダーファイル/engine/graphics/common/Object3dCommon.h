@@ -20,6 +20,8 @@ public:
 
 	//getter
 	Camera* GetDefaultCamera()const { return defaultCamera; }
+	ID3D12PipelineState* GetPipelineState() const { return graphicsPipelineState.Get(); }
+	ID3D12PipelineState* GetPipelineStateEnv() const { return graphicsPipelineStateEnvironment.Get(); }
 
 private:
 
@@ -27,6 +29,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateEnvironment = nullptr;
+
+	
 
 	DirectXCommon* dxCommon_;
 

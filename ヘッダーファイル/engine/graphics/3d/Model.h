@@ -36,7 +36,7 @@ public:
 	struct MaterialData
 	{
 		std::string textureFilePath;
-		//uint32_t textureIndex = 0;
+		std::string environmentTextureFilePath;
 	};
 
 	struct ModelData
@@ -55,6 +55,8 @@ public:
 		Matrix4x4 uvTransform;
 		float shininess;//光沢度
 		int32_t lightingModel;//ライトの切り替え
+		float environmentCoefficient;
+		float padding2;
 	};
 
 
@@ -64,9 +66,15 @@ public:
 
 	const Matrix4x4& GetLocalMatrix()const { return modelData.rootNode.localMatrix; }
 	Material* GetMaterial() { return materialData; }
+	const std::string& GetEnvironmentTextureFilePath() const { return environmentTextureFilePath; }
 
 	void SetEnableLighting(bool enable) { materialData->enableLighting = enable; };
 	void SetLightingModel(int model) { materialData->lightingModel = model; };
+	void SetEnvironmentCoefficient(float coefficient) { materialData->environmentCoefficient = coefficient; }
+	void SetEnvironmentTextureFilePath(const std::string& filePath) {
+		this->environmentTextureFilePath = filePath;
+	}
+
 
 private:
 
@@ -87,6 +95,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
 	//バッファリソース内のデータを指すポインタ
 	Material* materialData = nullptr;
+
+	std::string environmentTextureFilePath = "resources/rostock_laage_airport_4k.dds";
 
 
 	//.mtlファイルの読み取り

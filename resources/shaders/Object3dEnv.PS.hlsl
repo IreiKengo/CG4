@@ -4,9 +4,12 @@ struct Material
 {
     float32_t4 color;
     int32_t enableLighting;
+    float32_t3 padding1;
     float32_t4x4 uvTransform;
     float32_t shininess;
     int32_t lightingModel; // 0: Phong, 1: Blinn-Phong, 2:PointLight, 3:SpotLight
+    float32_t environmentCoefficient;
+    float32_t padding2;
 };
 
 struct DirectionalLight
@@ -49,7 +52,7 @@ ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 ConstantBuffer<Camera> gCamera : register(b2);
 ConstantBuffer<PointLight> gPointLight : register(b3);
 ConstantBuffer<SpotLight> gSpotLight : register(b4);
-
+TextureCube<float32_t4> gEnvironmentTexture : register(t1);
 
 
 struct LightingResult
@@ -198,6 +201,11 @@ PixelShaderOutput main(VertexShaderOutput input)
     float4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
     float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
     
+    float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+    float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+    float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+    
+    
     if (textureColor.a <= 0.5)
     {
         discard;
@@ -218,6 +226,7 @@ PixelShaderOutput main(VertexShaderOutput input)
             LightingResult directional =
             CreateDirectionalLight(gDirectionalLight, input.normal, toEye, baseColor, gMaterial.shininess);
             output.color.rgb = directional.diffuse + directional.specular;
+           
             
         }
         else if (gMaterial.lightingModel == 1)
@@ -226,6 +235,7 @@ PixelShaderOutput main(VertexShaderOutput input)
             LightingResult directional =
             CreateDirectionalLightBlinnPhong(gDirectionalLight, input.normal, toEye, baseColor, gMaterial.shininess);
             output.color.rgb = directional.diffuse + directional.specular;
+            
         }
         else if (gMaterial.lightingModel == 2)
         {
@@ -234,6 +244,7 @@ PixelShaderOutput main(VertexShaderOutput input)
             LightingResult pointLight = CreatePointLight(gPointLight, input.normal, input.worldPosition, toEye, baseColor, gMaterial.shininess);
 
             output.color.rgb = (directional.diffuse + directional.specular) + (pointLight.diffuse + pointLight.specular);
+           
         }
         else if (gMaterial.lightingModel == 3)
         {
@@ -243,6 +254,7 @@ PixelShaderOutput main(VertexShaderOutput input)
             LightingResult spot = CreateSpotLight(gSpotLight, input.normal, input.worldPosition, toEye, baseColor, gMaterial.shininess);
             
             output.color.rgb = (directional.diffuse + directional.specular) + (spot.diffuse + spot.specular);
+            
           
             
         }
@@ -252,5 +264,6 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         output.color = gMaterial.color * textureColor;
     }
+    output.color.rgb += environmentColor.rgb * gMaterial.environmentCoefficient;
     return output;
 }

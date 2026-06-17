@@ -43,6 +43,9 @@ void Model::Draw()
 	//SRVのDescriptorTableの先頭を設定
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData.material.textureFilePath));
 
+	
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTextureFilePath));
+
 	//描画！（DrawCall/ドローコール）
 	dxCommon_->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
@@ -178,8 +181,6 @@ void Model::CreateVertexData()
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));//書き込むためのアドレスを取得
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());//頂点データをリソースにコピー
 
-
-
 }
 
 void Model::CreateMaterialData()
@@ -196,7 +197,7 @@ void Model::CreateMaterialData()
 	materialData->uvTransform = MakeIdentity4x4();
 	materialData->shininess = 10.0f;
 	materialData->lightingModel = 0;
-
+	materialData->environmentCoefficient = 0.0f;
 }
 
 

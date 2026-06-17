@@ -88,13 +88,16 @@ public:
 	const Vector3& GetScale()const { return transform.scale; }
 	const Vector3& GetRotate()const { return transform.rotate; }
 	const Vector3& GetTranslate()const { return transform.translate; }
-	
+	void SetIsUseEnvironmentMap(bool isUse) { this->isUseEnvironmentMap = isUse; }
+	void SetEnvironmentCoefficient(float coefficient);
+	void SetEnvironmentTexture(const std::string& filePath);
 
 
 private:
 
 	Object3dCommon* object3dCommon = nullptr;
 
+	bool isUseEnvironmentMap = true;
 
 	//バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResources;

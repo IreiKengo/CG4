@@ -25,6 +25,9 @@
     <FxCompile Include="resources\shaders\Sprite.VS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\Object3dEnv.PS.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ソースファイル\engine\math\Matrix4x4Math.cpp">
@@ -96,13 +99,13 @@
     <ClCompile Include="ソースファイル\engine\graphics\common\Object3dCommon.cpp">
       <Filter>ソース ファイル\engine\graphics\common</Filter>
     </ClCompile>
-    <ClCompile Include="Framework.cpp">
+    <ClCompile Include="ソースファイル\engine\base\Framework.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="SkyboxCommon.cpp">
+    <ClCompile Include="ソースファイル\engine\graphics\common\SkyboxCommon.cpp">
       <Filter>ソース ファイル\engine\graphics\common</Filter>
     </ClCompile>
-    <ClCompile Include="Skybox.cpp">
+    <ClCompile Include="ソースファイル\engine\graphics\3d\Skybox.cpp">
       <Filter>ソース ファイル\engine\graphics\3d</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,13 +194,13 @@
     <ClInclude Include="ヘッダーファイル\engine\graphics\common\ModelCommon.h">
       <Filter>ヘッダー ファイル\engine\graphics\common</Filter>
     </ClInclude>
-    <ClInclude Include="Framework.h">
+    <ClInclude Include="ヘッダーファイル\engine\base\Framework.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="SkyboxCommon.h">
+    <ClInclude Include="ヘッダーファイル\engine\graphics\common\SkyboxCommon.h">
       <Filter>ヘッダー ファイル\engine\graphics\common</Filter>
     </ClInclude>
-    <ClInclude Include="Skybox.h">
+    <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Skybox.h">
       <Filter>ヘッダー ファイル\engine\graphics\3d</Filter>
     </ClInclude>
   </ItemGroup>

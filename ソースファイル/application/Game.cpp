@@ -7,7 +7,6 @@
 #include "Object3dCommon.h"
 #include "Object3d.h"
 #include "ModelCommon.h"
-#include "Model.h"
 #include"ModelManager.h"
 #include "Camera.h"
 #include "ParticleManager.h"
@@ -134,6 +133,18 @@ void Game::Initialize()
 
 #pragma endregion
 
+#pragma region スカイボックス
+
+	skyboxCommon = new SkyboxCommon();
+	skyboxCommon->Initialize(dxCommon);
+	skyboxCommon->SetDefaultCamera(camera);
+
+	skybox = new Skybox();
+	std::string skyboxDdsPath = "resources/rostock_laage_airport_4k.dds";
+	skybox->Initialize(skyboxCommon, skyboxDdsPath);
+
+#pragma endregion
+
 #pragma region オブジェクト関係
 
 	//3Dモデルマネージャの初期化
@@ -166,17 +177,14 @@ void Game::Initialize()
 		object[i]->Initialize(object3dCommon);
 		object[i]->SetModel(modelPath);
 
+		object[i]->SetEnvironmentTexture(skyboxDdsPath);
+		object[i]->SetIsUseEnvironmentMap(false);
+
 	}
 
 #pragma endregion
 
-	skyboxCommon = new SkyboxCommon();
-	skyboxCommon->Initialize(dxCommon);
-	skyboxCommon->SetDefaultCamera(camera);
-
-	skybox = new Skybox();
-	std::string skyboxDdsPath = "resources/rostock_laage_airport_4k.dds";
-	skybox->Initialize(skyboxCommon,skyboxDdsPath);
+	
 
 
 }
@@ -269,6 +277,7 @@ void Game::Draw()
 	//DirectXの描画基準。全ての描画に共通宇のグラッフィックスコマンドを積む
 	dxCommon->PreDraw();
 
+	skybox->Draw();
 
 	//3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 	object3dCommon->ScreenCommon();
@@ -288,7 +297,6 @@ void Game::Draw()
 	//Spriteの描画
 	//sprite->Draw();
 	 
-	skybox->Draw();
 
 	//ParticleManager::GetInstance()->Draw();
 
