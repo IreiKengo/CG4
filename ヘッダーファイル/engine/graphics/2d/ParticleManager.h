@@ -17,6 +17,8 @@ class DirectXCommon;
 class SrvManager;
 class Camera;
 
+
+
 class ParticleManager
 {
 
@@ -24,6 +26,10 @@ public:
 
 	static ParticleManager* GetInstance();
 
+	enum class ParticleMeshType {
+		Plane, // 四角形
+		Ring
+	};
 
 	struct Particle
 	{
@@ -80,6 +86,8 @@ public:
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		uint32_t vertexCount = 0;
 
+		ParticleMeshType meshType;
+
 	};
 
 	
@@ -100,7 +108,7 @@ public:
 	void Update();
 	void Draw();
 
-	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleMeshType meshType);
 	void Emit(const std::string name, const Vector3& position, uint32_t count);
 
 	void Finalize();
@@ -156,9 +164,9 @@ private:
 	void CreateGraphicsPipeline();
 
 	//パーティクル生成
-	Particle MakeNewParticle(const Vector3& translate);
+	Particle MakeNewParticle(const Vector3& translate, ParticleMeshType meshType);
 
-	void CreateVertexData(ParticleGroup & group);
+	void CreateVertexData(ParticleGroup & group, ParticleMeshType meshType);
 	void CreateMaterialData();
 
 };

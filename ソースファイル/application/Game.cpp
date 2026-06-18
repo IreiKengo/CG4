@@ -56,30 +56,33 @@ void Game::Initialize()
 #pragma region パーティクル
 	ParticleManager::GetInstance()->SetCamera(camera);
 
-	ParticleManager::GetInstance()->CreateParticleGroup(
-		"circle",
-		"resources/circle.png"
-	);
-
-	particleCircle = new ParticleEmitter
-	(
-		"circle",
-		Vector3{ 0, 0, 0 },
-		5,
-		0.1f
-	);
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
-		"circle2",              //新しい名前にする
-		"resources/circle2.png" //使いたい画像のパス
+		"Ring",              //新しい名前にする
+		"resources/gradationLine.png", //使いたい画像のパス
+		ParticleManager::ParticleMeshType::Ring
 	);
 
 
-	particleChecker = new ParticleEmitter(
-		"circle2",
+	particleRing = new ParticleEmitter(
+		"Ring",
+		Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
+		1,                        // 発生数
+		1.0f                      // 発生頻度
+	);
+
+	ParticleManager::GetInstance()->CreateParticleGroup(
+		"Plane",              //新しい名前にする
+		"resources/circle2.png", //使いたい画像のパス
+		ParticleManager::ParticleMeshType::Plane
+	);
+
+
+	particleCircle = new ParticleEmitter(
+		"Plane",
 		Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
 		5,                        // 発生数
-		0.1f                      // 発生頻度
+		1.0f                      // 発生頻度
 	);
 
 #pragma endregion
@@ -130,11 +133,11 @@ void Game::Initialize()
 void Game::Finalize()
 {
 
-	delete particleChecker;
 	delete particleCircle;
-	particleChecker = nullptr;
 	particleCircle = nullptr;
 	
+	delete particleRing;
+	particleRing = nullptr;
 
 	for (uint32_t i = 0; i < 2; ++i)
 	{
@@ -189,8 +192,9 @@ void Game::Update()
 
 	skybox->Update();
 
+	
 	particleCircle->Update(deltaTime);
-	particleChecker->Update(deltaTime);
+	particleRing->Update(deltaTime);
 	ParticleManager::GetInstance()->Update();
 
 

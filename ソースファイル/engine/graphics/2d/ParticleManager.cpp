@@ -124,10 +124,11 @@ void ParticleManager::Draw()
 {
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());//PSOを設定
-	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
 	
 	for (auto& [groupName, group] : particleGroups)
 	{
+		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &group.vertexBufferView);//VBVを設定
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0,materialResource->GetGPUVirtualAddress());
 		//インスタンシングデータのSRVのDescriptorTableを設定
@@ -168,7 +169,7 @@ void ParticleManager::CreateRootSignature()
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0～1の範囲外をリピート
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;//比較しない
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う
@@ -322,30 +323,49 @@ void ParticleManager::CreateGraphicsPipeline()
 
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate,ParticleMeshType meshType)
 {
 
 	std::uniform_real_distribution <float> distribution(-1.0f, 1.0f);
 	Particle particle;
+		std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
 
-	std::uniform_real_distribution <float> distScale(0.4f, 1.5f);
-	particle.transform.scale = { 0.05f,distScale(randomEngine_),1.0f};
+	if (meshType == ParticleMeshType::Plane)
+	{
 
-	std::uniform_real_distribution <float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-	particle.transform.rotate = { 0.0f,0.0f,distRotate(randomEngine_)};
+		std::uniform_real_distribution <float> distScale(0.4f, 1.5f);
+		particle.transform.scale = { 0.05f,distScale(randomEngine_),1.0f };
 
-	Vector3 randomTranslate{ distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
-	//particle.transform.translate = translate + randomTranslate;
-	particle.transform.translate = translate;
-	//particle.velocity = { distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
-	particle.velocity = { 0.0f, 0.0f, 0.0f };
-	//色
-	std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
-	particle.color = { distColor(randomEngine_),distColor(randomEngine_) ,distColor(randomEngine_),1.0f };
+		std::uniform_real_distribution <float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+		particle.transform.rotate = { 0.0f,0.0f,distRotate(randomEngine_)};
+		
 
-	//生存時間
-	std::uniform_real_distribution<float> distTime(1.0f, 1.0f);
-	particle.lifeTime = distTime(randomEngine_);
+		Vector3 randomTranslate{ distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
+		particle.transform.translate = translate;
+		particle.velocity = { 0.0f, 0.0f, 0.0f };
+		//色
+		particle.color = { distColor(randomEngine_),distColor(randomEngine_) ,distColor(randomEngine_),1.0f };
+
+		//生存時間
+		std::uniform_real_distribution<float> distTime(1.0f, 1.0f);
+		particle.lifeTime = distTime(randomEngine_);
+
+	} else if (meshType == ParticleMeshType::Ring)
+	{
+		
+		particle.transform.scale = { 0.5f,0.5f,0.5f };
+		particle.transform.rotate = { 0.0f,0.0f,0.0f };
+		particle.transform.translate = translate;
+		particle.velocity = { 0.0f, 0.0f, 0.0f };
+		//色
+		particle.color = { distColor(randomEngine_),distColor(randomEngine_) ,distColor(randomEngine_),1.0f };
+
+		//生存時間
+		std::uniform_real_distribution<float> distTime(1.0f, 1.0f);
+		particle.lifeTime = distTime(randomEngine_);
+	}
+
+	
 	particle.currentTime = 0;
 
 	return particle;
@@ -353,7 +373,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 }
 
 
-void ParticleManager::CreateParticleGroup(const std::string name,const std::string textureFilePath)
+void ParticleManager::CreateParticleGroup(const std::string name,const std::string textureFilePath, ParticleMeshType meshType)
 {
 
 	//登録済みの名前かチェックしてassert
@@ -361,6 +381,8 @@ void ParticleManager::CreateParticleGroup(const std::string name,const std::stri
 
 	//新たな空のパーティクルグループを作成し、コンテナに登録
 	ParticleManager::ParticleGroup particleGroup{};
+
+	particleGroup.meshType = meshType;
 
 	//新たなパーティクルグループの
 	//マテリアルデータにテクスチャファイルパスを設定
@@ -373,7 +395,7 @@ void ParticleManager::CreateParticleGroup(const std::string name,const std::stri
 
 	particleGroup.instancingSrvIndex = srvManager_->Allocate();
 
-	CreateVertexData(particleGroup);
+	CreateVertexData(particleGroup,meshType);
 
 
 	//Instancing用のParticleForGPUリソースを作る
@@ -428,7 +450,7 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
 	{
 		// 新たなパーティクルを作成
 		// MakeNewParticle内部で座標(position)にランダムなオフセットや速度が付与される
-		Particle newParticle = MakeNewParticle(position);
+		Particle newParticle = MakeNewParticle(position,group.meshType);
 
 		// 指定されたパーティクルグループのリストに登録
 		group.particles.push_back(newParticle);
@@ -472,15 +494,54 @@ void  ParticleManager::Finalize()
 }
 
 
-void ParticleManager::CreateVertexData(ParticleGroup& group)
+void ParticleManager::CreateVertexData(ParticleGroup& group, ParticleMeshType meshType)
 {
 	std::vector<VertexData> vertices;
-	vertices.push_back({ .position = {1.0f,1.0f,0.0f,1.0f},.texCoord = {0.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//左上
-	vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
-	vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
-	vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
-	vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
-	vertices.push_back({ .position = {-1.0f,-1.0f,0.0f,1.0f},.texCoord = {1.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//右下
+
+	if (meshType == ParticleMeshType::Plane)
+	{
+
+		vertices.push_back({ .position = {1.0f,1.0f,0.0f,1.0f},.texCoord = {0.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//左上
+		vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
+		vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
+		vertices.push_back({ .position = {1.0f,-1.0f,0.0f,1.0f},.texCoord = {0.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//左下
+		vertices.push_back({ .position = {-1.0f,1.0f,0.0f,1.0f},.texCoord = {1.0f,0.0f},.normal = {0.0f,0.0f,1.0f} });//右上
+		vertices.push_back({ .position = {-1.0f,-1.0f,0.0f,1.0f},.texCoord = {1.0f,1.0f},.normal = {0.0f,0.0f,1.0f} });//右下
+
+	} else if (meshType == ParticleMeshType::Ring)
+	{
+
+		const uint32_t kRingDivide = 32;
+		const float kOuterRadius = 1.0f;
+		const float kInnerRadius = 0.2f;
+		const float radianPreDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
+
+		for (uint32_t index = 0; index < kRingDivide; ++index)
+		{
+			float sin = std::sin(index * radianPreDivide);
+			float cos = std::cos(index * radianPreDivide);
+			float sinNext = std::sin((index + 1) * radianPreDivide);
+			float cosNext = std::cos((index + 1) * radianPreDivide);
+			float u = float(index) / float(kRingDivide);
+			float uNext = float(index + 1) / float(kRingDivide);
+			//positionとuv。normalは必要なら+zを設定する
+			VertexData v1 = { { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u,0.0f },{0.0f,0.0f,1.0f} };
+			VertexData v2 = { { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext,0.0f },{0.0f,0.0f,1.0f} };
+			VertexData v3 = { { -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u,1.0f },{0.0f,0.0f,1.0f} };
+			VertexData v4 = { { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext,1.0f },{0.0f,0.0f,1.0f} };
+
+			vertices.push_back(v1);
+			vertices.push_back(v2);
+			vertices.push_back(v3);
+
+			
+			vertices.push_back(v3);
+			vertices.push_back(v2);
+			vertices.push_back(v4);
+		}
+
+	}
+	
 
 	group.vertexCount = static_cast<uint32_t>(vertices.size());
 

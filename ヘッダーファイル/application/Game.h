@@ -41,8 +41,8 @@ private:
 
 
 	ParticleEmitter* particleCircle = nullptr;
-
-	ParticleEmitter* particleChecker = nullptr;
+	ParticleEmitter* particleRing = nullptr;
+	
 
 
 	Skybox* skybox = nullptr;
