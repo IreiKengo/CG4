@@ -34,7 +34,7 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon)
 
 	CreateGraphicsPipeline();
 
-	
+
 
 	accelerationField.acceleration = { -10.0f,0.0f,0.0f };
 	accelerationField.area.min = { -5.0f,-5.0f,-5.0f };
@@ -81,16 +81,41 @@ void ParticleManager::Update()
 				(*particleIterator).velocity += accelerationField.acceleration * kDeltaTime;
 			}*/
 
-			//移動処理（速度を座標に加算）
-			//(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
+			
 			//経過時間を加算
 			(*particleIterator).currentTime += kDeltaTime;//経過時間を足す
 
+
+			if (group.meshType == ParticleMeshType::Plane)
+			{
+				//移動処理（速度を座標に加算）
+				(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
+			} else if (group.meshType == ParticleMeshType::Ring)
+			{
+
+			} else if (group.meshType == ParticleMeshType::Cylinder)
+			{
+				(*particleIterator).transform.rotate.y += (*particleIterator).velocity.y * kDeltaTime;
+			}
+
+
 			Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
 			Matrix4x4 translateMatrix = MakeTranslateMatrix((*particleIterator).transform.translate);
-			Matrix4x4 rotateZMatrix = MakeRotateZMatrix((*particleIterator).transform.rotate.z);
+			
 			//ワールド行列を計算
-			Matrix4x4 worldMatrix = scaleMatrix * rotateZMatrix * billboardMatrix * translateMatrix;
+			Matrix4x4 worldMatrix;
+
+			if (group.meshType == ParticleMeshType::Cylinder)
+			{
+				
+				Matrix4x4 rotateYMatrix = MakeRotateYMatrix((*particleIterator).transform.rotate.y);
+				worldMatrix = scaleMatrix * rotateYMatrix * translateMatrix;
+			} else
+			{
+				
+				Matrix4x4 rotateZMatrix = MakeRotateZMatrix((*particleIterator).transform.rotate.z);
+				worldMatrix = scaleMatrix * rotateZMatrix * billboardMatrix * translateMatrix;
+			}
 
 			//ワールドビュープロジェクション行列を合成
 			Matrix4x4 worldViewProjectionMatrixParticle = Multiply(Multiply(worldMatrix, viewMatrix), projectionMatrix);
@@ -124,13 +149,13 @@ void ParticleManager::Draw()
 {
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());//PSOを設定
-	
-	
+
+
 	for (auto& [groupName, group] : particleGroups)
 	{
 		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &group.vertexBufferView);//VBVを設定
-		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0,materialResource->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 		//インスタンシングデータのSRVのDescriptorTableを設定
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(group.instancingSrvIndex));
 		//テクスチャのSRVのDescriptorTableを設定
@@ -140,7 +165,7 @@ void ParticleManager::Draw()
 		dxCommon_->GetCommandList()->DrawInstanced(group.vertexCount, group.numInstance, 0, 0);
 
 	}
-	
+
 }
 
 void ParticleManager::CreateRootSignature()
@@ -264,8 +289,8 @@ void ParticleManager::CreateGraphicsPipeline()
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	//裏面（時計回り）を表示しない
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
-	//rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;//裏面あり
+	//rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;//裏面あり
 	//三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -282,7 +307,7 @@ void ParticleManager::CreateGraphicsPipeline()
 	//DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	//Depthの機能を有効化する
-	depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthEnable = true;
 	//書き込みします
 	//depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;//Depthの書き込みを行わない
@@ -323,12 +348,12 @@ void ParticleManager::CreateGraphicsPipeline()
 
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate,ParticleMeshType meshType)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ParticleMeshType meshType)
 {
 
 	std::uniform_real_distribution <float> distribution(-1.0f, 1.0f);
 	Particle particle;
-		std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
+	std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
 
 	if (meshType == ParticleMeshType::Plane)
 	{
@@ -337,8 +362,8 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		particle.transform.scale = { 0.05f,distScale(randomEngine_),1.0f };
 
 		std::uniform_real_distribution <float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-		particle.transform.rotate = { 0.0f,0.0f,distRotate(randomEngine_)};
-		
+		particle.transform.rotate = { 0.0f,0.0f,distRotate(randomEngine_) };
+
 
 		Vector3 randomTranslate{ distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };
 		particle.transform.translate = translate;
@@ -352,7 +377,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 
 	} else if (meshType == ParticleMeshType::Ring)
 	{
-		
+
 		particle.transform.scale = { 0.5f,0.5f,0.5f };
 		particle.transform.rotate = { 0.0f,0.0f,0.0f };
 		particle.transform.translate = translate;
@@ -363,9 +388,23 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		//生存時間
 		std::uniform_real_distribution<float> distTime(1.0f, 1.0f);
 		particle.lifeTime = distTime(randomEngine_);
+	} else if (meshType == ParticleMeshType::Cylinder)
+	{
+
+		particle.transform.scale = { 0.5f,0.5f,0.5f };
+		particle.transform.rotate = { 0.0f,0.0f,0.0f };
+		particle.transform.translate = translate;
+		particle.velocity = { 0.0f, 1.0f, 0.0f };
+		//色
+		particle.color = { distColor(randomEngine_),distColor(randomEngine_) ,distColor(randomEngine_),1.0f };
+
+		//生存時間
+		std::uniform_real_distribution<float> distTime(5.0f, 5.0f);
+		particle.lifeTime = distTime(randomEngine_);
+
 	}
 
-	
+
 	particle.currentTime = 0;
 
 	return particle;
@@ -373,7 +412,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 }
 
 
-void ParticleManager::CreateParticleGroup(const std::string name,const std::string textureFilePath, ParticleMeshType meshType)
+void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleMeshType meshType)
 {
 
 	//登録済みの名前かチェックしてassert
@@ -395,7 +434,7 @@ void ParticleManager::CreateParticleGroup(const std::string name,const std::stri
 
 	particleGroup.instancingSrvIndex = srvManager_->Allocate();
 
-	CreateVertexData(particleGroup,meshType);
+	CreateVertexData(particleGroup, meshType);
 
 
 	//Instancing用のParticleForGPUリソースを作る
@@ -450,7 +489,7 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
 	{
 		// 新たなパーティクルを作成
 		// MakeNewParticle内部で座標(position)にランダムなオフセットや速度が付与される
-		Particle newParticle = MakeNewParticle(position,group.meshType);
+		Particle newParticle = MakeNewParticle(position, group.meshType);
 
 		// 指定されたパーティクルグループのリストに登録
 		group.particles.push_back(newParticle);
@@ -534,14 +573,47 @@ void ParticleManager::CreateVertexData(ParticleGroup& group, ParticleMeshType me
 			vertices.push_back(v2);
 			vertices.push_back(v3);
 
-			
+
 			vertices.push_back(v3);
 			vertices.push_back(v2);
 			vertices.push_back(v4);
 		}
 
+	} else if (meshType == ParticleMeshType::Cylinder)
+	{
+
+		const uint32_t kCylinderDivide = 32;
+		const float kTopRadius = 1.0f;
+		const float kBottomRadius = 1.0f;
+		const float kHeight = 3.0f;
+		const float radianPreDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
+
+		for (uint32_t index = 0; index < kCylinderDivide; ++index)
+		{
+			float sin = std::sin(index * radianPreDivide);
+			float cos = std::cos(index * radianPreDivide);
+			float sinNext = std::sin((index + 1) * radianPreDivide);
+			float cosNext = std::cos((index + 1) * radianPreDivide);
+			float u = float(index) / float(kCylinderDivide);
+			float uNext = float(index + 1) / float(kCylinderDivide);
+
+			VertexData v1 = { {-sin * kTopRadius,kHeight,cos * kTopRadius,1.0f},{u,0.0f},{-sin,0.0f,cos} };
+			VertexData v2 = { {-sinNext * kTopRadius,kHeight,cosNext * kTopRadius,1.0f},{uNext,0.0f},{-sinNext,0.0f,cosNext} };
+			VertexData v3 = { {-sin * kBottomRadius,0.0f,cos * kBottomRadius,1.0f},{u,1.0f},{-sin,0.0f,cos} };
+			VertexData v4 = { {-sin * kBottomRadius,0.0f,cos * kBottomRadius,1.0f},{u,1.0f},{-sin,0.0f,cos} };
+			VertexData v5 = { {-sinNext * kTopRadius,kHeight,cosNext * kTopRadius,1.0f},{uNext,0.0f},{-sinNext,0.0f,cosNext} };
+			VertexData v6 = { {-sinNext * kBottomRadius,0.0f,cosNext * kBottomRadius,1.0f},{uNext,1.0f},{-sinNext,0.0f,cosNext} };
+
+			vertices.push_back(v1);
+			vertices.push_back(v2);
+			vertices.push_back(v3);
+			vertices.push_back(v4);
+			vertices.push_back(v5);
+			vertices.push_back(v6);
+		}
+
 	}
-	
+
 
 	group.vertexCount = static_cast<uint32_t>(vertices.size());
 
@@ -571,5 +643,6 @@ void ParticleManager::CreateMaterialData()
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = { 1,1,1,1 };
 	materialData->uvTransform = MakeIdentity4x4();
+	materialData->alphaReference = 0.0f;
 
 }

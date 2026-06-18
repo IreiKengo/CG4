@@ -58,32 +58,20 @@ void Game::Initialize()
 
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
-		"Ring",              //新しい名前にする
+		"Cylinder",              //新しい名前にする
 		"resources/gradationLine.png", //使いたい画像のパス
-		ParticleManager::ParticleMeshType::Ring
+		ParticleManager::ParticleMeshType::Cylinder
 	);
 
 
-	particleRing = new ParticleEmitter(
-		"Ring",
+	particleCylinder = new ParticleEmitter(
+		"Cylinder",
 		Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
 		1,                        // 発生数
-		1.0f                      // 発生頻度
+		5.0f                      // 発生頻度
 	);
 
-	ParticleManager::GetInstance()->CreateParticleGroup(
-		"Plane",              //新しい名前にする
-		"resources/circle2.png", //使いたい画像のパス
-		ParticleManager::ParticleMeshType::Plane
-	);
-
-
-	particleCircle = new ParticleEmitter(
-		"Plane",
-		Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
-		5,                        // 発生数
-		1.0f                      // 発生頻度
-	);
+	
 
 #pragma endregion
 
@@ -133,11 +121,10 @@ void Game::Initialize()
 void Game::Finalize()
 {
 
-	delete particleCircle;
-	particleCircle = nullptr;
 	
-	delete particleRing;
-	particleRing = nullptr;
+
+	delete particleCylinder;
+	particleCylinder = nullptr;
 
 	for (uint32_t i = 0; i < 2; ++i)
 	{
@@ -193,8 +180,8 @@ void Game::Update()
 	skybox->Update();
 
 	
-	particleCircle->Update(deltaTime);
-	particleRing->Update(deltaTime);
+	
+	particleCylinder->Update(deltaTime);
 	ParticleManager::GetInstance()->Update();
 
 

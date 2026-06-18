@@ -28,7 +28,8 @@ public:
 
 	enum class ParticleMeshType {
 		Plane, // 四角形
-		Ring
+		Ring,
+		Cylinder,
 	};
 
 	struct Particle
@@ -70,6 +71,8 @@ public:
 		Vector4 color;
 	
 		Matrix4x4 uvTransform;
+		float alphaReference;
+		float padding[3];
 	};
 
 	struct ParticleGroup

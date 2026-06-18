@@ -40,8 +40,8 @@ private:
 	Object3d* object[2] = { nullptr };
 
 
-	ParticleEmitter* particleCircle = nullptr;
-	ParticleEmitter* particleRing = nullptr;
+	
+	ParticleEmitter* particleCylinder = nullptr;
 	
 
 
