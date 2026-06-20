@@ -600,16 +600,15 @@ void ParticleManager::CreateVertexData(ParticleGroup& group, ParticleMeshType me
 			VertexData v1 = { {-sin * kTopRadius,kHeight,cos * kTopRadius,1.0f},{u,0.0f},{-sin,0.0f,cos} };
 			VertexData v2 = { {-sinNext * kTopRadius,kHeight,cosNext * kTopRadius,1.0f},{uNext,0.0f},{-sinNext,0.0f,cosNext} };
 			VertexData v3 = { {-sin * kBottomRadius,0.0f,cos * kBottomRadius,1.0f},{u,1.0f},{-sin,0.0f,cos} };
-			VertexData v4 = { {-sin * kBottomRadius,0.0f,cos * kBottomRadius,1.0f},{u,1.0f},{-sin,0.0f,cos} };
-			VertexData v5 = { {-sinNext * kTopRadius,kHeight,cosNext * kTopRadius,1.0f},{uNext,0.0f},{-sinNext,0.0f,cosNext} };
-			VertexData v6 = { {-sinNext * kBottomRadius,0.0f,cosNext * kBottomRadius,1.0f},{uNext,1.0f},{-sinNext,0.0f,cosNext} };
+			VertexData v4 = { {-sinNext * kTopRadius,kHeight,cosNext * kTopRadius,1.0f},{uNext,0.0f},{-sinNext,0.0f,cosNext} };
+			VertexData v5 = { {-sinNext * kBottomRadius,0.0f,cosNext * kBottomRadius,1.0f},{uNext,1.0f},{-sinNext,0.0f,cosNext} };
 
 			vertices.push_back(v1);
 			vertices.push_back(v2);
 			vertices.push_back(v3);
+			vertices.push_back(v3);
 			vertices.push_back(v4);
 			vertices.push_back(v5);
-			vertices.push_back(v6);
 		}
 
 	}
