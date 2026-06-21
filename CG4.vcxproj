@@ -113,7 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\debug;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\debug;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -152,8 +152,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration />
-      <AdditionalLibraryDirectories>$(SolutionDir)..\generated\outputs\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\generated\outputs\$(Configuration)\;$(ProjectDir)externals\assimp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>imgui.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -197,6 +197,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Development|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="resources\shaders\Skybox.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
