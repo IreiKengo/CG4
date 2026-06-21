@@ -17,13 +17,7 @@
 mono_crash.*
 
 # Build results
-/Debug/
-/Release/
-/generated/outputs/Debug/
-/generated/outputs/Development/
-/generated/outputs/Release/
-x64/
-
+[Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
