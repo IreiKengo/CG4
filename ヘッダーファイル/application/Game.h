@@ -37,11 +37,13 @@ private:
 
 	Sprite* sprite = nullptr;	
 
-	Object3d* object[2] = { nullptr };
+	Object3d* object = nullptr;
 
 
 	
-	ParticleEmitter* particleCylinder = nullptr;
+	/*ParticleEmitter* particlePlane = nullptr;
+	ParticleEmitter* particleRing = nullptr;
+	ParticleEmitter* particleCylinder = nullptr;*/
 	
 
 

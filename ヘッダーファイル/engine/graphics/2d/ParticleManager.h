@@ -109,6 +109,7 @@ public:
 
 	void Initialize(DirectXCommon* dxCommon);
 	void Update();
+	void DebugUpdate();
 	void Draw();
 
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleMeshType meshType);
@@ -171,5 +172,7 @@ private:
 
 	void CreateVertexData(ParticleGroup & group, ParticleMeshType meshType);
 	void CreateMaterialData();
+
+	void HitEffect(Vector3& position);
 
 };

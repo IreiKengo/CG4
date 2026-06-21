@@ -56,6 +56,33 @@ void Game::Initialize()
 #pragma region パーティクル
 	ParticleManager::GetInstance()->SetCamera(camera);
 
+	ParticleManager::GetInstance()->CreateParticleGroup(
+		"Plane",              //新しい名前にする
+		"resources/Circle2.png", //使いたい画像のパス
+		ParticleManager::ParticleMeshType::Plane
+	);
+
+
+	//particlePlane = new ParticleEmitter(
+	//	"Plane",
+	//	Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
+	//	5,                        // 発生数
+	//	1.0f                      // 発生頻度
+	//);
+
+	ParticleManager::GetInstance()->CreateParticleGroup(
+		"Ring",              //新しい名前にする
+		"resources/gradationLine.png", //使いたい画像のパス
+		ParticleManager::ParticleMeshType::Ring
+	);
+
+
+	//particleRing = new ParticleEmitter(
+	//	"Ring",
+	//	Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
+	//	1,                        // 発生数
+	//	5.0f                      // 発生頻度
+	//);
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
 		"Cylinder",              //新しい名前にする
@@ -64,12 +91,12 @@ void Game::Initialize()
 	);
 
 
-	particleCylinder = new ParticleEmitter(
-		"Cylinder",
-		Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
-		1,                        // 発生数
-		5.0f                      // 発生頻度
-	);
+	//particleCylinder = new ParticleEmitter(
+	//	"Cylinder",
+	//	Vector3{ 0.0f, 0, 0 },    // 位置を少しずらすと見やすいです
+	//	1,                        // 発生数
+	//	5.0f                      // 発生頻度
+	//);
 
 	
 
@@ -90,26 +117,21 @@ void Game::Initialize()
 	
 	object3dCommon->SetDefaultCamera(camera);
 
-	for (int i = 0; i < 2; ++i)
-	{
+	
 
-		object[i] = new Object3d();
+		object = new Object3d();
 
 		std::string modelPath;
-		if (i % 2 == 0) {
-			modelPath = "terrain.obj";
-		} else {
+		modelPath = "terrain.obj";
+		
 
-			modelPath = "axis.obj";
-		}
+		object->Initialize(object3dCommon);
+		object->SetModel(modelPath);
 
-		object[i]->Initialize(object3dCommon);
-		object[i]->SetModel(modelPath);
+		object->SetEnvironmentTexture(skyboxDdsPath);
+		object->SetIsUseEnvironmentMap(false);
 
-		object[i]->SetEnvironmentTexture(skyboxDdsPath);
-		object[i]->SetIsUseEnvironmentMap(false);
-
-	}
+	
 
 #pragma endregion
 
@@ -121,16 +143,19 @@ void Game::Initialize()
 void Game::Finalize()
 {
 
-	
+	/*delete particlePlane;
+	particlePlane = nullptr;
+
+	delete particleRing;
+	particleRing = nullptr;
 
 	delete particleCylinder;
-	particleCylinder = nullptr;
+	particleCylinder = nullptr;*/
 
-	for (uint32_t i = 0; i < 2; ++i)
-	{
-		delete object[i];
-		object[i] = nullptr;
-	}
+	
+		delete object;
+		object = nullptr;
+	
 
 	//Sprite解放
 
@@ -159,21 +184,22 @@ void Game::Update()
 	camera->DebugUpdate();
 
 	//sprite->DebugUpdate();
-	for (uint32_t i = 0; i < 2; ++i)
-	{
-		object[i]->DebugUpdate();
-	}
+	
+		object->DebugUpdate();
+	
+
+	ParticleManager::GetInstance()->DebugUpdate();
+
 	//カメラの更新
 	camera->Update();
 
 	//sprite->Update();
 
-	object[0]->SetTranslate({ -1.0f,-1.0f,0.0f });
-	object[1]->SetTranslate({ 1.0f,-1.0f,0.0f });
-	for (uint32_t i = 0; i < 2; ++i)
-	{
-		object[i]->Update();
-	}
+	object->SetTranslate({ -1.0f,-1.0f,0.0f });
+	
+	
+		object->Update();
+	
 
 	float deltaTime = 1.0f / 60.0f; // 本来は実時間計測
 
@@ -181,7 +207,7 @@ void Game::Update()
 
 	
 	
-	particleCylinder->Update(deltaTime);
+	//particleCylinder->Update(deltaTime);
 	ParticleManager::GetInstance()->Update();
 
 
@@ -201,11 +227,10 @@ void Game::Draw()
 
 
 	//全てのObject3d個々の描画
-	for (uint32_t i = 0; i < 2; ++i)
-	{
-		object[0]->Draw();
+	
+		object->Draw();
 
-	}
+	
 
 	//Spriteの描画基準。Spriteの描画の共通のグラッフィックスコマンドを積む
 	//spriteCommon->ScreenCommon();

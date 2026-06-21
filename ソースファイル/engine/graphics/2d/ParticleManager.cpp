@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include <numbers>
 #include "Camera.h"
+#include "ImguiManager.h"
 
 
 using namespace StringUtility;
@@ -142,6 +143,32 @@ void ParticleManager::Update()
 	}
 
 	//全パーティクルグループ内の全パーティクルについて二重for文で処理する
+
+}
+
+void ParticleManager::DebugUpdate()
+{
+
+#ifdef USE_IMGUI
+	ImGui::Begin("ParticleDebug");
+
+	static Vector3 testEmitPosition = { 0.0f, 0.0f, 0.0f };
+	ImGui::DragFloat3("Spawn Position", &testEmitPosition.x, 0.1f);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	// 💡 ワンクリックでヒットエフェクトを発生させるボタン
+	if (ImGui::Button("HitEffect", ImVec2(250, 40)))
+	{
+		
+		HitEffect(testEmitPosition);
+	}
+
+	ImGui::End();
+
+#endif
 
 }
 
@@ -358,7 +385,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 	if (meshType == ParticleMeshType::Plane)
 	{
 
-		std::uniform_real_distribution <float> distScale(0.4f, 1.5f);
+		std::uniform_real_distribution <float> distScale(0.8f, 2.0f);
 		particle.transform.scale = { 0.05f,distScale(randomEngine_),1.0f };
 
 		std::uniform_real_distribution <float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
@@ -645,3 +672,13 @@ void ParticleManager::CreateMaterialData()
 	materialData->alphaReference = 0.0f;
 
 }
+
+void ParticleManager::HitEffect(Vector3& position)
+{
+
+	Emit("Plane", position, 8);
+	Emit("Ring", position, 1);
+
+
+}
+
