@@ -17,9 +17,9 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
+/Debug/
+/Release/
 [Dd]ebugPublic/
-[Rr]elease/
 [Rr]eleases/
 x64/
 x86/
@@ -361,5 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-!**/externals/assimp/lib/Release/assimp-vc143-mt.libF
