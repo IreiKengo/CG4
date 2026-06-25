@@ -87,7 +87,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\debug;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\debug;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,7 +115,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\debug;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\debug;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +145,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\debug;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\debug;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,16 +163,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ソースファイル\engine\base\Framework.cpp" />
+    <ClCompile Include="ソースファイル\engine\Framework\Framework.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\3d\Skybox.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\common\SkyboxCommon.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\3d\Camera.cpp" />
-    <ClCompile Include="ソースファイル\engine\debug\D3DResourceLeakChecker.cpp" />
+    <ClCompile Include="ソースファイル\engine\Framework\D3DResourceLeakChecker.cpp" />
     <ClCompile Include="ソースファイル\engine\base\DirectXCommon.cpp" />
     <ClCompile Include="ソースファイル\application\Game.cpp" />
-    <ClCompile Include="ソースファイル\engine\debug\ImguiManager.cpp" />
+    <ClCompile Include="ソースファイル\engine\Framework\ImguiManager.cpp" />
     <ClCompile Include="ソースファイル\engine\input\Input.cpp" />
-    <ClCompile Include="ソースファイル\engine\debug\Logger.cpp" />
+    <ClCompile Include="ソースファイル\engine\Framework\Logger.cpp" />
     <ClCompile Include="ソースファイル\application\main.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
       <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</WholeProgramOptimization>
@@ -262,16 +262,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ヘッダーファイル\engine\base\Framework.h" />
+    <ClInclude Include="ヘッダーファイル\engine\Framework\Framework.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Skybox.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\common\SkyboxCommon.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Camera.h" />
-    <ClInclude Include="ヘッダーファイル\engine\debug\D3DResourceLeakChecker.h" />
+    <ClInclude Include="ヘッダーファイル\engine\Framework\D3DResourceLeakChecker.h" />
     <ClInclude Include="ヘッダーファイル\engine\base\DirectXCommon.h" />
     <ClInclude Include="ヘッダーファイル\application\Game.h" />
-    <ClInclude Include="ヘッダーファイル\engine\debug\ImguiManager.h" />
+    <ClInclude Include="ヘッダーファイル\engine\Framework\ImguiManager.h" />
     <ClInclude Include="ヘッダーファイル\engine\input\Input.h" />
-    <ClInclude Include="ヘッダーファイル\engine\debug\Logger.h" />
+    <ClInclude Include="ヘッダーファイル\engine\Framework\Logger.h" />
     <ClInclude Include="ヘッダーファイル\engine\math\Matrix4x4Math.h" />
     <ClInclude Include="ヘッダーファイル\engine\math\Matrix3x3.h" />
     <ClInclude Include="ヘッダーファイル\engine\math\Matrix4x4.h" />
