@@ -130,6 +130,8 @@ private:
 	Camera* camera = nullptr;
 	
 	 float reflectIntensity = 0.5f;
+	 float outerAngle = 60.0f; // 外側角度
+	 float innerAngle = 30.0f; // 内側角度
 	
 	//座標返還行列データ作成
 	void CreateTransformationMatrixData();

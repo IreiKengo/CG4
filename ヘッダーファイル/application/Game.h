@@ -16,7 +16,7 @@ class Game : public Framework
 public:
 
 	void Initialize() override;
-
+	
 	void Finalize() override;
 
 	void Update() override;
