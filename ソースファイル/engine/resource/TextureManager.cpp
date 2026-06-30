@@ -39,6 +39,9 @@ void TextureManager::Finalize()
 
 void TextureManager::LoadTexture(const std::string& filePath)
 {
+	OutputDebugStringA(filePath.c_str());
+	OutputDebugStringA("\n");
+
 	assert(dxCommon_ && "TextureManager::Initialize() not called");
 
 	//読み込み済みテクスチャを検索
@@ -70,7 +73,9 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	 hr = DirectX::LoadFromWICFile(filePathw.c_str(),DirectX::WIC_FLAGS_FORCE_SRGB,nullptr,image);
 
 	}
-
+	char buf[128];
+	sprintf_s(buf, "LoadFromWICFile hr = 0x%08X\n", hr);
+	OutputDebugStringA(buf);
 	assert(SUCCEEDED(hr));
 
 	// ミップマップ生成

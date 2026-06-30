@@ -9,6 +9,12 @@ class Object3dCommon
 
 public:
 
+	enum BlendMode
+	{
+
+	};
+
+
 	void Initialize(DirectXCommon* dxCommon);
 	//共通画面設定
 	void ScreenCommon();

@@ -89,7 +89,7 @@ void Framework::Initialize()
 
 	sound = new Sound();
 
-	sound->Initialize("resources/fanfare.mp3");
+	sound->Initialize("resources/sound/fanfare.mp3");
 
 #pragma endregion
 

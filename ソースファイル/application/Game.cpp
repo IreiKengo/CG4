@@ -14,7 +14,7 @@
 #include"TextureManager.h"
 #include "Object3dCommon.h"
 #include "SkyboxCommon.h"
-#include "SpriteCommon.h"  // 今後使うときのために一緒に入れておくと安全です
+#include "SpriteCommon.h"  
 #include "ImguiManager.h"
 
 #pragma comment(lib,"Dbghelp.lib")
@@ -58,7 +58,7 @@ void Game::Initialize()
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
 		"Plane",              //新しい名前にする
-		"resources/Circle2.png", //使いたい画像のパス
+		"resources/particle/circle2.png", //使いたい画像のパス
 		ParticleManager::ParticleMeshType::Plane
 	);
 
@@ -72,7 +72,7 @@ void Game::Initialize()
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
 		"Ring",              //新しい名前にする
-		"resources/gradationLine.png", //使いたい画像のパス
+		"resources/particle/gradationLine.png", //使いたい画像のパス
 		ParticleManager::ParticleMeshType::Ring
 	);
 
@@ -86,7 +86,7 @@ void Game::Initialize()
 
 	ParticleManager::GetInstance()->CreateParticleGroup(
 		"Cylinder",              //新しい名前にする
-		"resources/gradationLine.png", //使いたい画像のパス
+		"resources/particle/gradationLine.png", //使いたい画像のパス
 		ParticleManager::ParticleMeshType::Cylinder
 	);
 
@@ -107,7 +107,7 @@ void Game::Initialize()
 	skyboxCommon->SetDefaultCamera(camera);
 
 	skybox = new Skybox();
-	std::string skyboxDdsPath = "resources/rostock_laage_airport_4k.dds";
+	std::string skyboxDdsPath = "resources/skybox/rostock_laage_airport_4k.dds";
 	skybox->Initialize(skyboxCommon, skyboxDdsPath);
 
 #pragma endregion
@@ -122,7 +122,7 @@ void Game::Initialize()
 		object = new Object3d();
 
 		std::string modelPath;
-		modelPath = "terrain.obj";
+		modelPath = "terrain/terrain.obj";
 		
 
 		object->Initialize(object3dCommon);

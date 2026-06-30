@@ -23,7 +23,8 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directoryPat
 	CreateVertexData();
 
 	CreateMaterialData();
-
+	OutputDebugStringA(modelData.material.textureFilePath.c_str());
+	OutputDebugStringA("\n");
 	//.objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData.material.textureFilePath);
 	//読み込んだテクスチャの番号を取得
@@ -155,7 +156,8 @@ Model::ModelData Model::LoadModelFile(const std::string& directoryPath, const st
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+			std::string folder = filename.substr(0, filename.find_last_of('/'));
+			modelData.material.textureFilePath = directoryPath + "/" + folder + "/" + textureFilePath.C_Str();
 		}
 	}
 
