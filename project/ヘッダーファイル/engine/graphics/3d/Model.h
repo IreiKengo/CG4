@@ -96,7 +96,7 @@ private:
 	//バッファリソース内のデータを指すポインタ
 	Material* materialData = nullptr;
 
-	std::string environmentTextureFilePath = "resources/rostock_laage_airport_4k.dds";
+	std::string environmentTextureFilePath = "";
 
 
 	//.mtlファイルの読み取り

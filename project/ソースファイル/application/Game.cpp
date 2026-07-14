@@ -39,7 +39,8 @@ void Game::Initialize()
 	camera = new Camera();
 	camera->SetRotate({ 0.0f,0.0f,0.0f });
 	camera->SetTranslate({ 0.0f,4.0f,-23.0f });
-#pragma endregion 
+
+#pragma endregion
 
 #pragma region スプライト関連
 
@@ -99,6 +100,7 @@ void Game::Initialize()
 	//);
 
 	
+	
 
 #pragma endregion
 
@@ -119,24 +121,23 @@ void Game::Initialize()
 
 	
 
-		object = new Object3d();
+		/*object = new Object3d();
 
 		std::string modelPath;
 		modelPath = "terrain/terrain.obj";
 		
 
 		object->Initialize(object3dCommon);
-		object->SetModel(modelPath);
+		object->SetModel(modelPath);*/
 
-		object->SetEnvironmentTexture(skyboxDdsPath);
-		object->SetIsUseEnvironmentMap(false);
-
-	
+		//object->SetEnvironmentTexture(skyboxDdsPath);
+		//object->SetIsUseEnvironmentMap(false);
 
 #pragma endregion
 
-	
-
+		LevelLoader* loader = new LevelLoader();
+		levelData = loader->LoadLevelJson("scene.json", object3dCommon);
+		delete loader;
 
 }
 
@@ -153,8 +154,8 @@ void Game::Finalize()
 	particleCylinder = nullptr;*/
 
 	
-		delete object;
-		object = nullptr;
+		//delete object;
+		//object = nullptr;
 	
 
 	//Sprite解放
@@ -170,6 +171,16 @@ void Game::Finalize()
 	delete camera;
 	camera = nullptr;
 	
+	if (levelData) {
+		
+		for (Object3d* obj : levelData->objectPtrs) {
+			delete obj;
+		}
+		levelData->objectPtrs.clear();
+
+		delete levelData;
+		levelData = nullptr;
+	}
 
 	//基底クラスの終了処理
 	Framework::Finalize();
@@ -185,7 +196,7 @@ void Game::Update()
 
 	//sprite->DebugUpdate();
 	
-		object->DebugUpdate();
+		//object->DebugUpdate();
 	
 
 	ParticleManager::GetInstance()->DebugUpdate();
@@ -195,11 +206,15 @@ void Game::Update()
 
 	//sprite->Update();
 
-	object->SetTranslate({ -1.0f,-1.0f,0.0f });
+	//object->SetTranslate({ -1.0f,-1.0f,0.0f });
 	
 	
-		object->Update();
-	
+		//object->Update();
+	if (levelData) {
+		for (Object3d* obj : levelData->objectPtrs) {
+			obj->Update(); // もしくはあなたのエンジンの描画関数
+		}
+	}
 
 	float deltaTime = 1.0f / 60.0f; // 本来は実時間計測
 
@@ -228,9 +243,13 @@ void Game::Draw()
 
 	//全てのObject3d個々の描画
 	
-		object->Draw();
+		//object->Draw();
 
-	
+	if (levelData) {
+		for (Object3d* obj : levelData->objectPtrs) {
+			obj->Draw(); // もしくはあなたのエンジンの描画関数
+		}
+	}
 
 	//Spriteの描画基準。Spriteの描画の共通のグラッフィックスコマンドを積む
 	//spriteCommon->ScreenCommon();
@@ -251,4 +270,5 @@ void Game::Draw()
 	TextureManager::GetInstance()->ReleaseIntermediateResources();
 
 }
+
 

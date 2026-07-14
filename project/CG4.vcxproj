@@ -87,7 +87,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,7 +115,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +145,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ヘッダーファイル;$(ProjectDir)ヘッダーファイル\application;$(ProjectDir)ヘッダーファイル\engine\audio;$(ProjectDir)ヘッダーファイル\engine\base;$(ProjectDir)ヘッダーファイル\engine\Framework;$(ProjectDir)ヘッダーファイル\engine\graphics\2d;$(ProjectDir)ヘッダーファイル\engine\graphics\3d;$(ProjectDir)ヘッダーファイル\engine\graphics\common;$(ProjectDir)ヘッダーファイル\engine\input;$(ProjectDir)ヘッダーファイル\engine\math;$(ProjectDir)ヘッダーファイル\engine\resource;$(ProjectDir)ソースファイル;$(ProjectDir)ソースファイル\application;$(ProjectDir)ソースファイル\engine\audio;$(ProjectDir)ソースファイル\engine\base;$(ProjectDir)ソースファイル\engine\Framework;$(ProjectDir)ソースファイル\engine\graphics\2d;$(ProjectDir)ソースファイル\engine\graphics\3d;$(ProjectDir)ソースファイル\engine\graphics\common;$(ProjectDir)ソースファイル\engine\input;$(ProjectDir)ソースファイル\engine\math;$(ProjectDir)ソースファイル\engine\resource;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,6 +163,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="ソースファイル\engine\Framework\Framework.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\3d\Skybox.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\common\SkyboxCommon.cpp" />
@@ -262,6 +263,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="ヘッダーファイル\engine\Framework\Framework.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Skybox.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\common\SkyboxCommon.h" />

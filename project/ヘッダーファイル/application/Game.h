@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "Framework.h"
-
+#include "LevelLoader.h"
 
 class Camera;
 class Sprite;
@@ -25,28 +25,27 @@ public:
 	
 	
 
+
+
 private:
 
 	
 
 	Camera* camera = nullptr;
 
-	
-
-	
 
 	Sprite* sprite = nullptr;	
 
-	Object3d* object = nullptr;
+	//Object3d* object = nullptr;
 
 
 	
 	/*ParticleEmitter* particlePlane = nullptr;
 	ParticleEmitter* particleRing = nullptr;
 	ParticleEmitter* particleCylinder = nullptr;*/
-	
-
 
 	Skybox* skybox = nullptr;
+
+	LevelLoader::LevelData* levelData = nullptr;
 
 };

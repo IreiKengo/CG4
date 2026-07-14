@@ -97,7 +97,7 @@ private:
 
 	Object3dCommon* object3dCommon = nullptr;
 
-	bool isUseEnvironmentMap = true;
+	bool isUseEnvironmentMap = false;
 
 	//バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResources;

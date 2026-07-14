@@ -108,6 +108,7 @@
     <ClCompile Include="ソースファイル\engine\graphics\3d\Skybox.cpp">
       <Filter>ソース ファイル\engine\graphics\3d</Filter>
     </ClCompile>
+    <ClCompile Include="LevelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ヘッダーファイル\engine\math\Vector2.h">
@@ -202,6 +203,9 @@
     </ClInclude>
     <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Skybox.h">
       <Filter>ヘッダー ファイル\engine\graphics\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelLoader.h">
+      <Filter>ヘッダー ファイル\application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
