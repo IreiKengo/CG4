@@ -163,7 +163,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LevelLoader.cpp" />
+    <ClCompile Include="ソースファイル\application\LevelLoader.cpp" />
     <ClCompile Include="ソースファイル\engine\Framework\Framework.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\3d\Skybox.cpp" />
     <ClCompile Include="ソースファイル\engine\graphics\common\SkyboxCommon.cpp" />
@@ -263,7 +263,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LevelLoader.h" />
+    <ClInclude Include="ヘッダーファイル\application\LevelLoader.h" />
     <ClInclude Include="ヘッダーファイル\engine\Framework\Framework.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\3d\Skybox.h" />
     <ClInclude Include="ヘッダーファイル\engine\graphics\common\SkyboxCommon.h" />
