@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
-
+#include "json.hpp"
 
 
 class Object3dCommon;
@@ -31,6 +31,11 @@ public:
 
 	};
 
+	struct NodeObject {
+		std::string name;
+		std::vector<NodeObject> children; // リスト<Object> children
+	};
+
 	//レベルデータ
 	struct LevelData {
 		//name
@@ -43,5 +48,7 @@ public:
 	};
 
 	LevelData* LoadLevelJson(const std::string& fileName, Object3dCommon* object3dCommon);
+
+	NodeObject ConvertJsonToObjects(const nlohmann::json& jsonNode, LevelData* levelData);
 
 };

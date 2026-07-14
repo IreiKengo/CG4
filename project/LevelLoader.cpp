@@ -3,7 +3,7 @@
 #include "json.hpp"
 #include <cassert>
 #include "Object3d.h"
-//#include "Model.h"
+
 
 
 LevelLoader::LevelData* LevelLoader::LoadLevelJson(const std::string& fileName, Object3dCommon* object3dCommon)
@@ -44,48 +44,18 @@ LevelLoader::LevelData* LevelLoader::LoadLevelJson(const std::string& fileName, 
 	LevelData* levelData = new LevelData();
 	levelData->name = name;
 
+	
+
 	// "objects"の全オブジェクトを走査
 	for (nlohmann::json& object : deserialized["objects"]) {
 		assert(object.contains("type"));
 
-		//種別を取得
-		std::string type = object["type"].get<std::string>();
-
-		//MESH
-		if (type.compare("MESH") == 0) {
-			// 要素追加
-			levelData->objects.emplace_back(ObjectData{});
-			// 今追加した要素の参照を得る
-			ObjectData& objectData = levelData->objects.back();
-
-			if (object.contains("file_name")) {
-				//ファイル名
-				objectData.fileName = object["file_name"];
-			}
-			//トランスフォームのパラメータ読み込み
-			nlohmann::json& transform = object["transform"];
-			//平行移動
-			objectData.transform.translation.x = (float)transform["translation"][0];
-			objectData.transform.translation.y = (float)transform["translation"][2];
-			objectData.transform.translation.z = (float)transform["translation"][1];
-			//回転角
-			objectData.transform.rotation.x = -(float)transform["rotation"][0];
-			objectData.transform.rotation.y = -(float)transform["rotation"][2];
-			objectData.transform.rotation.z = -(float)transform["rotation"][1];
-			//スケーリング
-			objectData.transform.scaling.x = (float)transform["scaling"][0];
-			objectData.transform.scaling.y = (float)transform["scaling"][2];
-			objectData.transform.scaling.z = (float)transform["scaling"][1];
-
-			// TODO:　コライダーのパラメータ読み込み
-
-		}
-
+		
 		//再帰処理
 		//TODO:　オブジェクト走査を再帰関数にまとめ、再帰呼出で枝を走査する
-		if (object.contains("children")) {
+		ConvertJsonToObjects(object,levelData);
 
-		}
+		
 
 	}
 
@@ -111,5 +81,65 @@ LevelLoader::LevelData* LevelLoader::LoadLevelJson(const std::string& fileName, 
 		levelData->objectPtrs.push_back(newObject);
 	}
 	return levelData;
+}
+
+LevelLoader::NodeObject LevelLoader::ConvertJsonToObjects(const nlohmann::json& jsonNode,LevelLoader::LevelData* levelData)
+{
+	//JSONノードの情報を元にObjectを作成
+	NodeObject object;
+	object.name = jsonNode["name"].get<std::string>();
+
+	assert(jsonNode.contains("type"));
+
+	//種別を取得
+	std::string type = jsonNode["type"].get<std::string>();
+
+	//MESH
+	if (type.compare("MESH") == 0) {
+		// 要素追加
+		levelData->objects.emplace_back(ObjectData{});
+		// 今追加した要素の参照を得る
+		ObjectData& objectData = levelData->objects.back();
+
+		if (jsonNode.contains("file_name")) {
+			//ファイル名
+			objectData.fileName = jsonNode["file_name"].get<std::string>();
+		}
+		//トランスフォームのパラメータ読み込み
+		const auto& transform = jsonNode["transform"];
+		//平行移動
+		objectData.transform.translation.x = (float)transform["translation"][0];
+		objectData.transform.translation.y = (float)transform["translation"][2];
+		objectData.transform.translation.z = (float)transform["translation"][1];
+		//回転角
+		objectData.transform.rotation.x = -(float)transform["rotation"][0];
+		objectData.transform.rotation.y = -(float)transform["rotation"][2];
+		objectData.transform.rotation.z = -(float)transform["rotation"][1];
+		//スケーリング
+		objectData.transform.scaling.x = (float)transform["scaling"][0];
+		objectData.transform.scaling.y = (float)transform["scaling"][2];
+		objectData.transform.scaling.z = (float)transform["scaling"][1];
+
+		// TODO:　コライダーのパラメータ読み込み
+
+	}
+
+	//子ノードが存在する場合、再帰的に処理
+	if (jsonNode.contains("children"))
+	{
+		for (const auto& childrens : jsonNode["children"])
+		{
+			NodeObject childObject = ConvertJsonToObjects(childrens,levelData);
+
+			object.children.push_back(childObject);
+
+		}
+
+
+	}
+	
+
+
+	return object;
 }
 
