@@ -121,23 +121,31 @@ void Game::Initialize()
 
 	
 
-		/*object = new Object3d();
+		//object = new Object3d();
 
 		std::string modelPath;
 		modelPath = "terrain/terrain.obj";
 		
 
-		object->Initialize(object3dCommon);
-		object->SetModel(modelPath);*/
+		/*object->Initialize(object3dCommon);
+		object->SetModel(modelPath);
 
-		//object->SetEnvironmentTexture(skyboxDdsPath);
-		//object->SetIsUseEnvironmentMap(false);
+		object->SetEnvironmentTexture(skyboxDdsPath);
+		object->SetIsUseEnvironmentMap(false);*/
 
 #pragma endregion
 
 		LevelLoader* loader = new LevelLoader();
 		levelData = loader->LoadLevelJson("scene.json", object3dCommon);
 		delete loader;
+
+		if (levelData) {
+			for (Object3d* obj : levelData->objectPtrs) {
+				if (obj) {
+					obj->SetEnvironmentTexture(skyboxDdsPath); // ★ここで呼んでいる
+				}
+			}
+		}
 
 }
 
@@ -198,7 +206,7 @@ void Game::Update()
 	
 		//object->DebugUpdate();
 	
-
+	LevelLoader::DebugUpdate(levelData);
 	ParticleManager::GetInstance()->DebugUpdate();
 
 	//カメラの更新
@@ -207,9 +215,8 @@ void Game::Update()
 	//sprite->Update();
 
 	//object->SetTranslate({ -1.0f,-1.0f,0.0f });
-	
-	
-		//object->Update();
+	//object->Update();
+
 	if (levelData) {
 		for (Object3d* obj : levelData->objectPtrs) {
 			obj->Update(); // もしくはあなたのエンジンの描画関数
@@ -235,7 +242,7 @@ void Game::Draw()
 	//DirectXの描画基準。全ての描画に共通宇のグラッフィックスコマンドを積む
 	dxCommon->PreDraw();
 
-	//skybox->Draw();
+	skybox->Draw();
 
 	//3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 	object3dCommon->ScreenCommon();

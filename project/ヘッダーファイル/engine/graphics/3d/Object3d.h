@@ -74,6 +74,7 @@ public:
 	void Draw();
 	void DebugUpdate();
 
+	void SetParent(Object3d* parentPtr) { parent_ = parentPtr; }
 
 	//setter
 	void SetModel(Model* model) { this->model = model; }
@@ -95,9 +96,11 @@ public:
 
 private:
 
+	Object3d* parent_ = nullptr;
+
 	Object3dCommon* object3dCommon = nullptr;
 
-	bool isUseEnvironmentMap = false;
+	bool isUseEnvironmentMap;
 
 	//バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResources;

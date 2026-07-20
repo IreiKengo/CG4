@@ -3,7 +3,7 @@
 #include "json.hpp"
 #include <cassert>
 #include "Object3d.h"
-
+#include "ImGuiManager.h"
 
 
 LevelLoader::LevelData* LevelLoader::LoadLevelJson(const std::string& fileName, Object3dCommon* object3dCommon)
@@ -44,19 +44,19 @@ LevelLoader::LevelData* LevelLoader::LoadLevelJson(const std::string& fileName, 
 	LevelData* levelData = new LevelData();
 	levelData->name = name;
 
-	
+	// 最上位のノードたちを一時的に保持するリスト
+	std::vector<NodeObject> rootNodes;
 
 	// "objects"の全オブジェクトを走査
 	for (nlohmann::json& object : deserialized["objects"]) {
 		assert(object.contains("type"));
-
+		rootNodes.push_back(ConvertJsonToObjects(object, levelData));
 		
 		//再帰処理
 		//TODO:　オブジェクト走査を再帰関数にまとめ、再帰呼出で枝を走査する
-		ConvertJsonToObjects(object,levelData);
+		//ConvertJsonToObjects(object,levelData);
 
 		
-
 	}
 
 
@@ -75,11 +75,17 @@ LevelLoader::LevelData* LevelLoader::LoadLevelJson(const std::string& fileName, 
 		newObject->SetRotate(objectData.transform.rotation);
 		//スケール
 		newObject->SetScale(objectData.transform.scaling);
+		//環境マップ
 		newObject->SetIsUseEnvironmentMap(false);
 
 		//配列に登録
 		levelData->objectPtrs.push_back(newObject);
 	}
+
+	for (const auto& rootNode : rootNodes) {
+		LinkObjectsParentRecursive(rootNode, levelData, nullptr);
+	}
+
 	return levelData;
 }
 
@@ -88,6 +94,7 @@ LevelLoader::NodeObject LevelLoader::ConvertJsonToObjects(const nlohmann::json& 
 	//JSONノードの情報を元にObjectを作成
 	NodeObject object;
 	object.name = jsonNode["name"].get<std::string>();
+	object.objectDataIndex = -1; // 初期値は-1（MESHではないライトやカメラ用）
 
 	assert(jsonNode.contains("type"));
 
@@ -100,6 +107,9 @@ LevelLoader::NodeObject LevelLoader::ConvertJsonToObjects(const nlohmann::json& 
 		levelData->objects.emplace_back(ObjectData{});
 		// 今追加した要素の参照を得る
 		ObjectData& objectData = levelData->objects.back();
+		object.objectDataIndex = (int)levelData->objects.size() - 1;
+
+		objectData.name = jsonNode["name"].get<std::string>();
 
 		if (jsonNode.contains("file_name")) {
 			//ファイル名
@@ -121,6 +131,24 @@ LevelLoader::NodeObject LevelLoader::ConvertJsonToObjects(const nlohmann::json& 
 		objectData.transform.scaling.z = (float)transform["scaling"][1];
 
 		// TODO:　コライダーのパラメータ読み込み
+		if (jsonNode.contains("collider"))
+		{
+
+			const auto& colliderJson = jsonNode["collider"];
+
+			// 1つずつバラして型を指定して読み込む
+			objectData.collider.type = colliderJson["type"].get<std::string>();
+
+			
+			objectData.collider.center.x = (float)colliderJson["center"][0];
+			objectData.collider.center.y = (float)colliderJson["center"][2];
+			objectData.collider.center.z = (float)colliderJson["center"][1];
+
+			objectData.collider.size.x = (float)colliderJson["size"][0];
+			objectData.collider.size.y = (float)colliderJson["size"][1];
+			objectData.collider.size.z = (float)colliderJson["size"][2];
+
+		}
 
 	}
 
@@ -137,9 +165,89 @@ LevelLoader::NodeObject LevelLoader::ConvertJsonToObjects(const nlohmann::json& 
 
 
 	}
-	
-
-
 	return object;
 }
 
+
+void LevelLoader::LinkObjectsParentRecursive(const NodeObject& node, LevelData* levelData, Object3d* currentParentPtr)
+{
+	// 今のノードが本物のオブジェクト（MESHなど）を指しているか確認
+	Object3d* nextParentPtr = currentParentPtr;
+
+	if (node.objectDataIndex != -1) {
+		// インデックスを元に、生成済みの実体ポインタを取得
+		Object3d* myObjectPtr = levelData->objectPtrs[node.objectDataIndex];
+
+		// 親ポインタが存在するなら、親子関係をバインドする
+		if (currentParentPtr != nullptr) {
+			myObjectPtr->SetParent(currentParentPtr);
+		}
+
+		// 自分が、次の子供たちにとっての親になる
+		nextParentPtr = myObjectPtr;
+	}
+
+	// 子供たちの階層へ再帰的に潜る
+	for (const auto& childNode : node.children) {
+		LinkObjectsParentRecursive(childNode, levelData, nextParentPtr);
+	}
+}
+
+void LevelLoader::DebugUpdate(LevelData* levelData)
+{
+
+#ifdef USE_IMGUI
+	
+
+	ImGui::Begin("Level Editor Debug");
+
+	
+	// レベル内のオブジェクトを1つずつ処理
+	for (size_t i = 0; i < levelData->objects.size(); ++i) {
+		Object3d* objPtr = levelData->objectPtrs[i];
+		if (!objPtr) continue;
+
+		// --- 【ここから対策】 ---
+		// 元々の名前を取得（もし空なら "NoName" にする）
+		std::string originalName = levelData->objects[i].name;
+		if (originalName.empty()) {
+			originalName = "NoName";
+		}
+
+		// 名前が同じ、または空でもImGuiがバグらないように、
+		// 「名前##ループインデックス」という文字列を作る
+		// 例: "Cube##0", "Cube##1" (##以降はImGuiの画面には表示されず、内部IDとしてだけ使われます)
+		std::string displayName = originalName + "##" + std::to_string(i);
+		// --- 【ここまで対策】 ---
+
+		if (ImGui::TreeNode(displayName.c_str())) {
+
+			// Object3dから現在のトランスフォームを取得して書き換える
+			Vector3 translate = objPtr->GetTranslate();
+			Vector3 rotate = objPtr->GetRotate();
+			Vector3 scale = objPtr->GetScale();
+
+			if (ImGui::DragFloat3("Translate", &translate.x, 0.1f)) {
+				objPtr->SetTranslate(translate);
+			}
+			if (ImGui::SliderFloat3("Rotate", &rotate.x, -3.14f, 3.14f)) {
+				objPtr->SetRotate(rotate);
+			}
+			if (ImGui::DragFloat3("Scale", &scale.x, 0.1f)) {
+				objPtr->SetScale(scale);
+			}
+
+			// Object3d自身のデバッグ表示（ライトや環境マップなど）
+			objPtr->DebugUpdate();
+
+			ImGui::TreePop(); // ツリーを閉じる
+			ImGui::Separator();
+		}
+	}
+
+	ImGui::End();
+
+#endif 
+
+
+}

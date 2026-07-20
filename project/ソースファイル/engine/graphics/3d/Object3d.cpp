@@ -28,7 +28,8 @@ void Object3d::Initialize(Object3dCommon* object3dCommon)
 	//Transform変数を作る
 	transform = { {1.0f,1.0f,1.0f},{0.0f,3.156f,0.0f},{0.0f,0.0f,0.0f} };
 
-
+	isUseEnvironmentMap = false;
+	useLighting = false;
 }
 
 void Object3d::Update()
@@ -37,6 +38,12 @@ void Object3d::Update()
 	//transform.rotate.y += 0.03f;
 	
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+
+	if (parent_ != nullptr) {
+		
+		worldMatrix = Multiply(worldMatrix, parent_->transformationMatrixData->World);
+	}
+
 	Matrix4x4 worldViewProjectionMatrix;
 	if (camera)
 	{
@@ -76,6 +83,26 @@ void Object3d::Draw()
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointResource->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotResource->GetGPUVirtualAddress());
 
+
+	if (isUseEnvironmentMap && model)
+	{
+		std::string envPath = model->GetEnvironmentTextureFilePath();
+
+		if (!envPath.empty())
+		{
+			// パスが有効なら、7番にCubeMapを正しくバインド
+			D3D12_GPU_DESCRIPTOR_HANDLE srvHandle =
+				TextureManager::GetInstance()->GetSrvHandleGPU(envPath);
+
+			dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(7, srvHandle);
+		} else
+		{
+			// 【重要】パスが空文字の場合は、エラー回避のために通常用PSOに上書き設定し直す
+			dxCommon_->GetCommandList()->SetPipelineState(object3dCommon->GetPipelineState());
+		}
+	}
+
+	
 	//3Dモデルが割り当てられていれば描画する
 	if (model)
 	{
